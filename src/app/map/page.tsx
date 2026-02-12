@@ -30,30 +30,30 @@ export default function MapPage() {
 
             {/* Info section */}
             <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4" dir="rtl">
-                <div className="bg-white dark:bg-slate-800 rounded-xl p-5 border border-slate-200 dark:border-slate-700 shadow-sm">
-                    <h3 className="font-bold text-emerald-700 dark:text-emerald-400 mb-2 flex items-center gap-2">
+                <div className="glass-card rounded-xl p-5 border-none shadow-sm hover:shadow-md transition-all">
+                    <h3 className="font-bold text-primary mb-2 flex items-center gap-2 text-lg">
                         <span>📍</span>
                         <span>مواقع القبائل</span>
                     </h3>
-                    <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                    <p className="text-sm text-muted-foreground leading-relaxed">
                         تعرض الخريطة المواقع الجغرافية للقبائل والأنساب العربية من الجذور التاريخية إلى الفروع المعاصرة.
                     </p>
                 </div>
-                <div className="bg-white dark:bg-slate-800 rounded-xl p-5 border border-slate-200 dark:border-slate-700 shadow-sm">
-                    <h3 className="font-bold text-amber-700 dark:text-amber-400 mb-2 flex items-center gap-2">
+                <div className="glass-card rounded-xl p-5 border-none shadow-sm hover:shadow-md transition-all">
+                    <h3 className="font-bold text-amber-700 dark:text-amber-400 mb-2 flex items-center gap-2 text-lg">
                         <span>⏱️</span>
                         <span>خط زمني تفاعلي</span>
                     </h3>
-                    <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                    <p className="text-sm text-muted-foreground leading-relaxed">
                         استخدم شريط الزمن لتصفية الأحداث التاريخية حسب الفترة — من عصر ما قبل الإسلام إلى العصر الحديث.
                     </p>
                 </div>
-                <div className="bg-white dark:bg-slate-800 rounded-xl p-5 border border-slate-200 dark:border-slate-700 shadow-sm">
-                    <h3 className="font-bold text-blue-700 dark:text-blue-400 mb-2 flex items-center gap-2">
+                <div className="glass-card rounded-xl p-5 border-none shadow-sm hover:shadow-md transition-all">
+                    <h3 className="font-bold text-blue-700 dark:text-blue-400 mb-2 flex items-center gap-2 text-lg">
                         <span>⚔️</span>
                         <span>أحداث تاريخية</span>
                     </h3>
-                    <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                    <p className="text-sm text-muted-foreground leading-relaxed">
                         استكشف المعارك والهجرات والتحالفات والأحداث الثقافية المرتبطة بكل قبيلة وعشيرة.
                     </p>
                 </div>

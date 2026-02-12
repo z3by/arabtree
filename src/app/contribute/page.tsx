@@ -14,21 +14,21 @@ export default function ContributePage() {
 
             {/* ── Info Cards ── */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="flex items-start gap-3 p-4 rounded-lg border bg-card">
+                <div className="flex items-start gap-3 p-4 rounded-xl glass-card border-none">
                     <BookOpen className="w-5 h-5 text-primary mt-0.5 shrink-0" />
                     <div>
                         <div className="font-semibold text-sm">وثّق مصادرك</div>
                         <div className="text-xs text-muted-foreground">كتب، مخطوطات، أو روايات شفهية</div>
                     </div>
                 </div>
-                <div className="flex items-start gap-3 p-4 rounded-lg border bg-card">
+                <div className="flex items-start gap-3 p-4 rounded-xl glass-card border-none">
                     <Shield className="w-5 h-5 text-primary mt-0.5 shrink-0" />
                     <div>
                         <div className="font-semibold text-sm">مراجعة شاملة</div>
                         <div className="text-xs text-muted-foreground">كل مساهمة تخضع لمراجعة متخصصين</div>
                     </div>
                 </div>
-                <div className="flex items-start gap-3 p-4 rounded-lg border bg-card">
+                <div className="flex items-start gap-3 p-4 rounded-xl glass-card border-none">
                     <Clock className="w-5 h-5 text-primary mt-0.5 shrink-0" />
                     <div>
                         <div className="font-semibold text-sm">متابعة الحالة</div>
@@ -38,7 +38,7 @@ export default function ContributePage() {
             </div>
 
             {/* ── Form ── */}
-            <div className="p-6 md:p-8 border rounded-xl bg-card shadow-sm">
+            <div className="p-6 md:p-8 rounded-xl glass-card border-none shadow-lg">
                 <ContributionForm />
             </div>
         </div>

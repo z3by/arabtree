@@ -29,6 +29,7 @@ model User {
   contributions  Contribution[] @relation("author")
   reviews        Contribution[] @relation("reviewer")
   auditLogs      AuditLog[]
+  notifications  Notification[]
 
   // NextAuth.js
   accounts Account[]
@@ -379,4 +380,42 @@ enum AuditAction {
   APPROVE
   REJECT
   FLAG
+}
+
+// ──────────────────────────────────────────────
+// 🔔 Notifications
+// ──────────────────────────────────────────────
+
+/// In-app notifications for contribution status updates,
+/// verification requests, and community announcements.
+model Notification {
+  id          String           @id @default(auto()) @map("_id") @db.ObjectId
+
+  userId      String           @db.ObjectId
+  user        User             @relation(fields: [userId], references: [id])
+
+  type        NotificationType
+  title       String           // English title
+  titleAr     String           // Arabic title
+  message     String?          // English message body
+  messageAr   String?          // Arabic message body
+  read        Boolean          @default(false)
+  link        String?          // Navigation link (e.g., "/verify", "/tree/[nodeId]")
+  entityId    String?          @db.ObjectId  // Related entity ID
+  entityType  String?          // "Contribution", "LineageNode", etc.
+
+  createdAt   DateTime         @default(now())
+
+  @@index([userId, read])
+  @@index([createdAt])
+  @@map("notifications")
+}
+
+enum NotificationType {
+  CONTRIBUTION_APPROVED   // Author's contribution was approved
+  CONTRIBUTION_REJECTED   // Author's contribution was rejected
+  CONTRIBUTION_PENDING    // New contribution needs review (for verifiers)
+  CONTRIBUTION_COMMENT    // Reviewer left feedback
+  ROLE_CHANGED            // User's role was updated
+  SYSTEM_ANNOUNCEMENT     // Platform-wide announcement
 }

@@ -1,4 +1,4 @@
-import { PrismaClient, NodeType, NodeStatus, EventType } from '@prisma/client'
+import { PrismaClient, NodeType, NodeStatus, EventType, NotificationType, UserRole } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
@@ -6,6 +6,7 @@ async function main() {
     console.log('🌱 Starting seed...')
 
     // Clear existing data (order matters for self-referencing relations)
+    await prisma.notification.deleteMany()
     await prisma.historicalEvent.deleteMany()
     await prisma.contribution.deleteMany()
     // Nullify parent references first, then delete nodes
@@ -306,6 +307,76 @@ async function main() {
         ],
     })
     console.log('✅ Created 10 historical events')
+
+    // ────────────────────────────────────────────
+    // 4. DEMO USER + SAMPLE NOTIFICATIONS
+    // ────────────────────────────────────────────
+    console.log('\n👤 Creating demo user and notifications...')
+
+    // Upsert a demo user for notifications
+    const demoUser = await prisma.user.upsert({
+        where: { email: 'demo@arabtree.com' },
+        update: {},
+        create: {
+            name: 'مستخدم تجريبي',
+            email: 'demo@arabtree.com',
+            role: UserRole.CONTRIBUTOR,
+            reputationScore: 25,
+        },
+    })
+
+    await prisma.notification.createMany({
+        data: [
+            {
+                userId: demoUser.id,
+                type: NotificationType.CONTRIBUTION_APPROVED,
+                title: 'Contribution Approved',
+                titleAr: 'تمت الموافقة على مساهمتك',
+                message: 'Your contribution about the Mudar tribe has been approved.',
+                messageAr: 'تمت الموافقة على مساهمتك حول قبيلة مضر.',
+                link: '/contribute',
+                read: false,
+            },
+            {
+                userId: demoUser.id,
+                type: NotificationType.CONTRIBUTION_REJECTED,
+                title: 'Contribution Rejected',
+                titleAr: 'تم رفض مساهمتك',
+                message: 'More sources needed for the claimed lineage connection.',
+                messageAr: 'يلزم تقديم مصادر إضافية لإثبات صلة النسب المذكورة.',
+                link: '/contribute',
+                read: false,
+            },
+            {
+                userId: demoUser.id,
+                type: NotificationType.CONTRIBUTION_PENDING,
+                title: 'New contribution awaiting review',
+                titleAr: 'مساهمة جديدة بانتظار المراجعة',
+                message: 'A new node addition for Banu Tamim.',
+                messageAr: 'إضافة عقدة جديدة لبني تميم.',
+                link: '/verify',
+                read: false,
+            },
+            {
+                userId: demoUser.id,
+                type: NotificationType.ROLE_CHANGED,
+                title: 'Your role has been updated to CONTRIBUTOR',
+                titleAr: 'تم تحديث صلاحيتك إلى مساهم',
+                read: true,
+            },
+            {
+                userId: demoUser.id,
+                type: NotificationType.SYSTEM_ANNOUNCEMENT,
+                title: 'Historical Maps feature is now live!',
+                titleAr: 'ميزة الخريطة التاريخية متاحة الآن!',
+                message: 'Explore tribal territories and historical events on the new map.',
+                messageAr: 'استكشف مواقع القبائل والأحداث التاريخية على الخريطة الجديدة.',
+                link: '/map',
+                read: false,
+            },
+        ],
+    })
+    console.log('✅ Created demo user and 5 sample notifications')
 
     console.log('\n🎉 Seed completed successfully!')
 }

@@ -238,14 +238,14 @@ function SearchContent() {
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {results.map((node) => (
                     <Link href={`/tree/${node.id}`} key={node.id}>
-                        <Card className="h-full hover:bg-muted/50 transition-all cursor-pointer border hover:border-primary/30 hover:shadow-md group">
+                        <Card className="h-full glass-card border-none hover:shadow-lg transition-all cursor-pointer group hover:-translate-y-1 duration-300">
                             <CardHeader className="p-4 pb-2">
                                 <div className="flex justify-between items-start">
                                     <Badge className={`${typeColors[node.type] || ''} border text-[10px] px-2 py-0`}>
                                         {typeLabels[node.type] || node.type}
                                     </Badge>
                                     {node.birthYear && (
-                                        <span className="text-xs text-muted-foreground">
+                                        <span className="text-xs text-muted-foreground bg-muted/50 px-2 py-0.5 rounded-full">
                                             {node.birthYear}{node.deathYear ? ` - ${node.deathYear}` : ''} م
                                         </span>
                                     )}
@@ -253,11 +253,11 @@ function SearchContent() {
                                 <CardTitle className="text-lg pt-2 group-hover:text-primary transition-colors">{node.nameAr}</CardTitle>
                                 <div className="text-sm text-muted-foreground">{node.name}</div>
                             </CardHeader>
-                            <CardContent className="p-4 pt-0 text-xs text-muted-foreground space-y-1">
-                                {node.title && <div className="text-primary font-medium">{node.title}</div>}
-                                {node.era && <div>{node.era}</div>}
-                                {node.birthPlace && <div>📍 {node.birthPlace}</div>}
-                                {node.childCount > 0 && <div>{node.childCount} فرع</div>}
+                            <CardContent className="p-4 pt-0 text-xs text-muted-foreground space-y-2 mt-2">
+                                {node.title && <div className="text-primary font-medium flex items-center gap-1">👑 {node.title}</div>}
+                                {node.era && <div className="flex items-center gap-1">🕰️ {node.era}</div>}
+                                {node.birthPlace && <div className="flex items-center gap-1">📍 {node.birthPlace}</div>}
+                                {node.childCount > 0 && <div className="flex items-center gap-1">🌿 {node.childCount} فرع</div>}
                             </CardContent>
                         </Card>
                     </Link>

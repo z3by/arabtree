@@ -9,36 +9,10 @@ export default async function ProfilePage() {
     const session = await auth()
 
     if (!session?.user) {
-        // For manual testing if auth assumes mock
-        // return redirect('/api/auth/signin')
+        redirect('/login')
     }
 
-    // Fetch user data directly from DB to get fresh specific fields or use session
-    // In dev without auth provider setting valid session, let's mock or try to find first user
-
-    let user = session?.user
-
-    // MOCK FOR DEV: If no session, try to find a user in DB to display profile
-    if (!user && process.env.NODE_ENV === 'development') {
-        const dbUser = await prisma.user.findFirst()
-        if (dbUser) {
-            user = {
-                id: dbUser.id,
-                name: dbUser.name,
-                email: dbUser.email,
-                image: dbUser.image,
-                role: dbUser.role,
-            }
-        }
-    }
-
-    if (!user) {
-        return (
-            <div className="container py-10 text-center">
-                Please sign in to view your profile.
-            </div>
-        )
-    }
+    const user = session.user
 
     const contributions = await prisma.contribution.findMany({
         where: { authorId: user.id },
@@ -58,10 +32,7 @@ export default async function ProfilePage() {
                     <p className="text-muted-foreground">{user.email}</p>
                     <div className="flex gap-2 mt-2">
                         <div className="text-sm bg-secondary px-2 py-1 rounded">
-                            Reputation: {0} {/* Placeholder for now */}
-                        </div>
-                        <div className="text-sm bg-secondary px-2 py-1 rounded">
-                            Role: {'VIEWER'} {/* user.role not available in default session unless extended */}
+                            Role: {user.role || 'VIEWER'}
                         </div>
                     </div>
                 </div>
@@ -74,3 +45,4 @@ export default async function ProfilePage() {
         </div>
     )
 }
+
