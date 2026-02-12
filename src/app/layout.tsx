@@ -7,6 +7,9 @@ import { Toaster } from "@/components/ui/sonner";
 export const metadata: Metadata = {
   title: "ArabTree | شجرة الأنساب",
   description: "Digital platform to document and visualize Arab genealogy.",
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({
@@ -22,7 +25,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="font-sans antialiased bg-background text-foreground" style={{ fontFamily: "'Noto Kufi Arabic', system-ui, arial" }}>
+      <body className="font-arabic antialiased">
         <SessionProvider>
           <ThemeProvider
             attribute="class"

@@ -170,6 +170,6 @@ Note: You'll need to create a `Dockerfile` first.
 
 If you encounter issues:
 
-1. Check the [GitHub Issues](https://github.com/z3by/arabtree/issues)
+1. Check the [GitHub Issues](https://github.com/YOUR-USERNAME/arabtree/issues)
 2. Review Netlify's [Next.js deployment guide](https://docs.netlify.com/frameworks/next-js/)
 3. Open a new issue if your problem isn't covered

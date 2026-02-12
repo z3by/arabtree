@@ -139,4 +139,8 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  .font-arabic {
+    font-family: 'Noto Kufi Arabic', system-ui, arial, sans-serif;
+  }
 }
