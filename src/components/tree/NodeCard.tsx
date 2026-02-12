@@ -2,7 +2,7 @@ import { memo } from 'react'
 import { Handle, Position } from 'reactflow'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { ChevronDown, ChevronsDown, Info } from 'lucide-react'
+import { ChevronDown, ChevronRight, Info } from 'lucide-react'
 import Link from 'next/link'
 
 interface NodeData {
@@ -16,16 +16,18 @@ interface NodeData {
     deathYear?: number
     childCount?: number
     expanded?: boolean
+    onToggle?: (nodeId: string) => void
 }
 
 const NodeCard = ({ id, data }: { id: string; data: NodeData }) => {
     const nodeId = data.id || id
+    const hasChildren = data.childCount && data.childCount > 0
 
     return (
         <div className="relative group">
             <Handle type="target" position={Position.Top} className="!bg-muted-foreground w-3 h-3" />
 
-            <Card className={`w-[200px] glass-card border-none hover:shadow-lg hover:scale-105 transition-all duration-300 ${data.expanded ? 'ring-2 ring-primary/50' : ''}`}>
+            <Card className={`w-[200px] glass-card border-none hover:shadow-lg hover:scale-105 transition-all duration-300 ${data.expanded && hasChildren ? 'ring-2 ring-primary/50' : ''}`}>
                 {/* Info link to detail page */}
                 <Link
                     href={`/tree/${nodeId}`}
@@ -57,11 +59,21 @@ const NodeCard = ({ id, data }: { id: string; data: NodeData }) => {
                         <span className="opacity-50">Unknown Era</span>
                     )}
 
-                    {data.childCount && data.childCount > 0 ? (
-                        <div className="mt-2 flex items-center justify-center gap-1 text-primary cursor-pointer hover:font-bold transition-all p-1 hover:bg-primary/5 rounded">
+                    {hasChildren ? (
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation()
+                                data.onToggle?.(nodeId)
+                            }}
+                            className="mt-2 w-full flex items-center justify-center gap-1 text-primary cursor-pointer hover:font-bold transition-all p-1.5 hover:bg-primary/10 rounded-md group/toggle"
+                        >
                             <span className="text-[10px]">{data.childCount} descendants</span>
-                            {data.expanded ? <ChevronDown className="w-3 h-3" /> : <ChevronsDown className="w-3 h-3" />}
-                        </div>
+                            {data.expanded ? (
+                                <ChevronDown className="w-3.5 h-3.5 transition-transform group-hover/toggle:translate-y-0.5" />
+                            ) : (
+                                <ChevronRight className="w-3.5 h-3.5 transition-transform group-hover/toggle:translate-x-0.5" />
+                            )}
+                        </button>
                     ) : null}
                 </CardContent>
             </Card>

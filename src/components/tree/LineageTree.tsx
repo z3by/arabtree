@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import ReactFlow, {
     addEdge,
     Connection,
@@ -62,11 +62,78 @@ const getLayoutedElements = (nodes: Node[], edges: Edge[]) => {
     return { nodes, edges }
 }
 
+// Recursively collect all descendant node IDs from a given node
+function getDescendantIds(nodeId: string, edges: Edge[]): Set<string> {
+    const descendants = new Set<string>()
+    const queue = [nodeId]
+    while (queue.length > 0) {
+        const current = queue.shift()!
+        for (const edge of edges) {
+            if (edge.source === current && !descendants.has(edge.target)) {
+                descendants.add(edge.target)
+                queue.push(edge.target)
+            }
+        }
+    }
+    return descendants
+}
+
 function LineageTreeInner() {
     const [nodes, setNodes, onNodesChange] = useNodesState([])
     const [edges, setEdges, onEdgesChange] = useEdgesState([])
     const { fitView } = useReactFlow()
     const [loading, setLoading] = useState(false)
+
+    // Store full tree data so collapse/expand doesn't need re-fetching
+    const allNodesRef = useRef<Node[]>([])
+    const allEdgesRef = useRef<Edge[]>([])
+    // Track which node IDs are currently collapsed
+    const collapsedRef = useRef<Set<string>>(new Set())
+
+    // Given full data + collapsed set, compute visible nodes/edges
+    const computeVisible = useCallback(() => {
+        const collapsed = collapsedRef.current
+        const allEdges = allEdgesRef.current
+
+        // Find all nodes hidden by collapsed ancestors
+        const hiddenIds = new Set<string>()
+        for (const collapsedId of collapsed) {
+            const descendants = getDescendantIds(collapsedId, allEdges)
+            for (const d of descendants) hiddenIds.add(d)
+        }
+
+        const visibleNodes = allNodesRef.current
+            .filter(n => !hiddenIds.has(n.id))
+            .map(n => ({
+                ...n,
+                data: {
+                    ...n.data,
+                    expanded: !collapsed.has(n.id),
+                },
+            }))
+
+        const visibleNodeIds = new Set(visibleNodes.map(n => n.id))
+        const visibleEdges = allEdges.filter(
+            e => visibleNodeIds.has(e.source) && visibleNodeIds.has(e.target)
+        )
+
+        return getLayoutedElements(visibleNodes, visibleEdges)
+    }, [])
+
+    // Toggle collapse/expand for a node
+    const handleToggle = useCallback((nodeId: string) => {
+        const collapsed = collapsedRef.current
+        if (collapsed.has(nodeId)) {
+            collapsed.delete(nodeId)
+        } else {
+            collapsed.add(nodeId)
+        }
+
+        const { nodes: layoutedNodes, edges: layoutedEdges } = computeVisible()
+        setNodes(layoutedNodes)
+        setEdges(layoutedEdges)
+        setTimeout(() => fitView({ duration: 400 }), 50)
+    }, [computeVisible, setNodes, setEdges, fitView])
 
     // Initial fetch for ALL nodes — build full tree
     useEffect(() => {
@@ -89,6 +156,7 @@ function LineageTreeInner() {
                         deathYear: node.deathYear,
                         childCount: node.childCount,
                         expanded: true,
+                        onToggle: handleToggle,
                     },
                 }))
 
@@ -103,6 +171,11 @@ function LineageTreeInner() {
                         animated: true,
                         style: { stroke: '#94a3b8' },
                     }))
+
+                // Store full data in refs
+                allNodesRef.current = initialNodes
+                allEdgesRef.current = initialEdges
+                collapsedRef.current = new Set()
 
                 const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(initialNodes, initialEdges)
                 setNodes(layoutedNodes)
@@ -119,80 +192,15 @@ function LineageTreeInner() {
         }
 
         init()
-    }, [fitView, setNodes, setEdges]) // Added dependencies
+    }, [fitView, setNodes, setEdges, handleToggle]) // Added dependencies
 
-    const onNodeClick = useCallback(async (event: React.MouseEvent, node: Node) => {
-        // If already expanded, maybe collapse? For now, let's just ignore or toggle.
-        // Implementing toggle off is complex because we need to remove descendants.
-        // Let's just focus on expanding for now.
-
-        if (node.data.expanded) {
-            // Optional: Implement collapse logic here in future
-            return
-        }
-
-        if (!node.data.childCount || node.data.childCount === 0) {
-            return
-        }
-
-        setLoading(true)
-        try {
-            const { data: children } = await getLineageNodes({ parentId: node.id })
-
-            if (children.length === 0) {
-                toast.info('No children found')
-                return
-            }
-
-            // Create new nodes
-            const newNodes: Node[] = children.map((child: LineageNode) => ({
-                id: child.id,
-                type: 'custom',
-                position: { x: 0, y: 0 }, // Position will be set by layout
-                data: {
-                    label: child.name,
-                    nameAr: child.nameAr,
-                    title: child.title,
-                    epithet: child.epithet,
-                    type: child.type,
-                    birthYear: child.birthYear,
-                    deathYear: child.deathYear,
-                    childCount: child.childCount,
-                    expanded: false,
-                },
-            }))
-
-            // Create new edges
-            const newEdges: Edge[] = children.map((child) => ({
-                id: `${node.id}-${child.id}`,
-                source: node.id,
-                target: child.id,
-                type: 'smoothstep',
-                animated: true,
-                style: { stroke: '#94a3b8' }
-            }))
-
-            // Update parsed nodes to mark parent as expanded
-            const updatedNodes = nodes.map(n =>
-                n.id === node.id ? { ...n, data: { ...n.data, expanded: true } } : n
-            )
-
-            // Merge and Layout
-            const allNodes = [...updatedNodes, ...newNodes] // Be careful of duplicates if we implement collapse/expand toggle
-            const allEdges = [...edges, ...newEdges]
-
-            const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(allNodes, allEdges)
-
-            setNodes(layoutedNodes)
-            setEdges(layoutedEdges)
-
-        } catch (error) {
-            toast.error('Failed to load descendants')
-            console.error(error)
-        } finally {
-            setLoading(false)
-        }
-    }, [nodes, edges, setNodes, setEdges])
+    // Keep onToggle callback fresh in allNodesRef when handleToggle changes
+    useEffect(() => {
+        allNodesRef.current = allNodesRef.current.map(n => ({
+            ...n,
+            data: { ...n.data, onToggle: handleToggle },
+        }))
+    }, [handleToggle])
 
     const onConnect = useCallback(
         (params: Connection) =>
@@ -220,7 +228,6 @@ function LineageTreeInner() {
                 onNodesChange={onNodesChange}
                 onEdgesChange={onEdgesChange}
                 onConnect={onConnect}
-                onNodeClick={onNodeClick}
                 nodeTypes={nodeTypes}
                 fitView
                 className="bg-slate-50 dark:bg-slate-950"
