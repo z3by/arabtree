@@ -29,3 +29,35 @@ export async function getLineageNodes(params: {
 
     return response.json()
 }
+
+export interface LineageNodeDetail {
+    node: LineageNode
+    ancestors: Array<{
+        id: string
+        name: string
+        nameAr: string
+        type: string
+    }>
+    children: Array<{
+        id: string
+        name: string
+        nameAr: string
+        title: string | null
+        epithet: string | null
+        type: string
+        birthYear: number | null
+        deathYear: number | null
+        childCount: number
+        era: string | null
+    }>
+}
+
+export async function getLineageNode(id: string): Promise<LineageNodeDetail> {
+    const response = await fetch(`/api/lineage/${id}`)
+
+    if (!response.ok) {
+        throw new Error('Failed to fetch lineage node')
+    }
+
+    return response.json()
+}

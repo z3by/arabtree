@@ -65,7 +65,7 @@ export default function SearchPage() {
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {results.map((node) => (
-                    <Link href={`/tree?root=true&focus=${node.id}`} key={node.id}>
+                    <Link href={`/tree/${node.id}`} key={node.id}>
                         <Card className="h-full hover:bg-muted/50 transition-colors cursor-pointer border-dashed hover:border-solid">
                             <CardHeader className="p-4 pb-2">
                                 <div className="flex justify-between items-start">
