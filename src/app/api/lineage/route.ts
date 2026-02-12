@@ -10,13 +10,16 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams
     const rootOnly = searchParams.get('root') === 'true'
     const parentId = searchParams.get('parentId')
-    const limit = parseInt(searchParams.get('limit') || '100')
+    const all = searchParams.get('all') === 'true'
+    const limit = parseInt(searchParams.get('limit') || '500')
     const skip = parseInt(searchParams.get('skip') || '0')
 
     try {
         const where: Prisma.LineageNodeWhereInput = {}
 
-        if (rootOnly) {
+        if (all) {
+            // No filter — fetch all nodes for full tree view
+        } else if (rootOnly) {
             where.type = 'ROOT'
         } else if (parentId) {
             where.parentId = parentId

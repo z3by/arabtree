@@ -68,12 +68,12 @@ function LineageTreeInner() {
     const { fitView } = useReactFlow()
     const [loading, setLoading] = useState(false)
 
-    // Initial fetch for ROOT nodes
+    // Initial fetch for ALL nodes — build full tree
     useEffect(() => {
         const init = async () => {
             setLoading(true)
             try {
-                const { data } = await getLineageNodes({ root: true })
+                const { data } = await getLineageNodes({ all: true })
 
                 const initialNodes: Node[] = data.map((node: LineageNode) => ({
                     id: node.id,
@@ -88,13 +88,25 @@ function LineageTreeInner() {
                         birthYear: node.birthYear,
                         deathYear: node.deathYear,
                         childCount: node.childCount,
-                        expanded: false,
+                        expanded: true,
                     },
                 }))
 
-                const { nodes: layoutedNodes } = getLayoutedElements(initialNodes, [])
+                // Build edges from parentId relationships
+                const initialEdges: Edge[] = data
+                    .filter((node: LineageNode) => node.parentId)
+                    .map((node: LineageNode) => ({
+                        id: `${node.parentId}-${node.id}`,
+                        source: node.parentId!,
+                        target: node.id,
+                        type: 'smoothstep',
+                        animated: true,
+                        style: { stroke: '#94a3b8' },
+                    }))
+
+                const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(initialNodes, initialEdges)
                 setNodes(layoutedNodes)
-                setEdges([])
+                setEdges(layoutedEdges)
 
                 // Fit view after a brief delay to allow rendering
                 setTimeout(() => fitView(), 100)

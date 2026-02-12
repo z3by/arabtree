@@ -12,10 +12,12 @@ export interface LineageResponse {
 export async function getLineageNodes(params: {
     root?: boolean
     parentId?: string
+    all?: boolean
     limit?: number
     skip?: number
 }): Promise<LineageResponse> {
     const searchParams = new URLSearchParams()
+    if (params.all) searchParams.append('all', 'true')
     if (params.root) searchParams.append('root', 'true')
     if (params.parentId) searchParams.append('parentId', params.parentId)
     if (params.limit) searchParams.append('limit', params.limit.toString())
