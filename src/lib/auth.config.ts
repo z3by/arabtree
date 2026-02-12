@@ -26,6 +26,7 @@ export const authConfig = {
         session({ session, token }) {
             if (session.user && token.sub) {
                 session.user.id = token.sub;
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 session.user.role = token.role as any;
             }
             return session;

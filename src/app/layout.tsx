@@ -3,6 +3,7 @@ import { Noto_Kufi_Arabic } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import SessionProvider from "@/components/providers/SessionProvider";
+import { Toaster } from "@/components/ui/sonner";
 
 const notoKufi = Noto_Kufi_Arabic({
   subsets: ["arabic"],
@@ -32,6 +33,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             {children}
+            <Toaster />
           </ThemeProvider>
         </SessionProvider>
       </body>
