@@ -1,0 +1,382 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// ──────────────────────────────────────────────
+// 🔐 User & Authentication
+// ──────────────────────────────────────────────
+
+model User {
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  email           String    @unique
+  emailVerified   DateTime?
+  image           String?
+  passwordHash    String?
+  role            UserRole  @default(VIEWER)
+  reputationScore Int       @default(0)    // Earned via approved contributions
+  bio             String?                  // Optional user biography
+  locale          String    @default("ar") // Preferred language: "ar" | "en"
+
+  // Relations
+  contributions  Contribution[] @relation("author")
+  reviews        Contribution[] @relation("reviewer")
+  auditLogs      AuditLog[]
+
+  // NextAuth.js
+  accounts Account[]
+  sessions Session[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([role])
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String  @db.ObjectId
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  sessionToken String   @unique
+  userId       String   @db.ObjectId
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+enum UserRole {
+  VIEWER
+  CONTRIBUTOR
+  VERIFIER
+  ADMIN
+}
+
+// ──────────────────────────────────────────────
+// 🌳 Lineage Tree (Core Model)
+// ──────────────────────────────────────────────
+
+/// The central model of ArabTree. Each node represents a person, family,
+/// clan, tribe, or root patriarch. Uses a self-referencing relation to
+/// model the parent ↔ children hierarchy with infinite nesting depth.
+model LineageNode {
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+
+  // ── Identity ──
+  name            String        // Transliterated Latin name (e.g., "Adnan")
+  nameAr          String        // Arabic name (e.g., "عدنان")
+  title           String?       // Honorary title (e.g., "أبو القبائل")
+  epithet         String?       // Laqab / Nisba (e.g., "التميمي")
+  alternateNames  String[]      // Alternate spellings & transliterations
+
+  // ── Hierarchy ──
+  type            NodeType
+  generationDepth Int           @default(0) // Distance from root (0 = root patriarch)
+
+  // ── Self-Referencing Relation (Parent ↔ Children) ──
+  parentId        String?       @db.ObjectId
+  parent          LineageNode?  @relation("ParentChild", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  children        LineageNode[] @relation("ParentChild")
+  childCount      Int           @default(0) // Denormalized for display without loading children
+
+  // ── Metadata ──
+  status          NodeStatus    @default(DRAFT)
+  biography       String?       // Rich text biography / notes
+  biographyAr     String?       // Arabic biography
+  birthYear       Int?          // Approximate birth year (CE)
+  birthYearHijri  Int?          // Approximate birth year (Hijri)
+  deathYear       Int?          // Approximate death year (CE)
+  deathYearHijri  Int?          // Approximate death year (Hijri)
+  birthPlace      String?       // Region or city
+  era             String?       // Historical era label (e.g., "الجاهلية", "الأموي")
+
+  // ── Geolocation (for map features) ──
+  latitude        Float?
+  longitude       Float?
+
+  // ── Relations ──
+  contributions    Contribution[]
+  historicalEvents HistoricalEvent[]
+  tribalSymbols    TribalSymbol[]
+  dnaMarkers       DnaMarker[]
+
+  // ── Authorship ──
+  createdById     String?       @db.ObjectId // Who created this node
+
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@index([parentId])
+  @@index([name])
+  @@index([nameAr])
+  @@index([type, status])
+  @@index([generationDepth])
+  @@index([createdById])
+  @@map("lineage_nodes")
+}
+
+enum NodeType {
+  ROOT        // Adnan, Qahtan — root patriarchs
+  TRIBE       // Major tribe (e.g., Banu Tamim)
+  CLAN        // Sub-tribe / clan
+  FAMILY      // Family unit
+  INDIVIDUAL  // Single person
+}
+
+enum NodeStatus {
+  DRAFT       // Created but not submitted
+  PENDING     // Submitted for review
+  PUBLISHED   // Verified and public
+  FLAGGED     // Under community review
+  ARCHIVED    // Removed from public view
+}
+
+// ──────────────────────────────────────────────
+// ✅ Contribution & Verification
+// ──────────────────────────────────────────────
+
+/// Tracks user-submitted contributions to the lineage tree.
+/// Each contribution targets a specific node and goes through
+/// a verification workflow (Draft → Pending → Approved/Rejected).
+model Contribution {
+  id            String             @id @default(auto()) @map("_id") @db.ObjectId
+
+  // ── Who ──
+  authorId      String             @db.ObjectId
+  author        User               @relation("author", fields: [authorId], references: [id])
+  reviewerId    String?            @db.ObjectId
+  reviewer      User?              @relation("reviewer", fields: [reviewerId], references: [id])
+
+  // ── What ──
+  nodeId        String             @db.ObjectId
+  node          LineageNode        @relation(fields: [nodeId], references: [id])
+  type          ContributionType
+  payload       Json               // The proposed changes (flexible structure)
+  summary       String?            // Human-readable summary of the proposed change
+
+  // ── Workflow ──
+  status        ContributionStatus @default(DRAFT)
+  reviewNote    String?            // Feedback from verifier
+  rejectionCount Int               @default(0) // Track revision cycles
+  submittedAt   DateTime?
+  reviewedAt    DateTime?
+
+  // ── Source / Evidence ──
+  sources       Source[]           // Embedded array of source citations
+
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+
+  @@index([authorId])
+  @@index([nodeId])
+  @@index([status])
+  @@index([status, submittedAt])
+  @@map("contributions")
+}
+
+/// Embedded type for source citations attached to contributions.
+type Source {
+  sourceType    String   // "book", "manuscript", "oral_history", "dna_report", "academic_paper", "genealogy_register"
+  title         String   // Source title
+  author        String?  // Source author (if applicable)
+  year          Int?     // Publication year
+  url           String?  // URL or DOI
+  isbn          String?  // ISBN (for books)
+  note          String?  // Additional context
+}
+
+enum ContributionType {
+  ADD_NODE      // Propose a new lineage node
+  EDIT_NODE     // Propose changes to an existing node
+  MERGE_NODES   // Propose merging duplicate nodes
+  ADD_SOURCE    // Attach a new source to a node
+  ADD_EVENT     // Add a historical event
+}
+
+enum ContributionStatus {
+  DRAFT
+  PENDING
+  APPROVED
+  REJECTED
+  WITHDRAWN
+}
+
+// ──────────────────────────────────────────────
+// 📜 Historical Events
+// ──────────────────────────────────────────────
+
+/// Historical events associated with a lineage node (tribe, clan, or individual).
+/// Used to enrich the tree with context and power the historical maps feature.
+model HistoricalEvent {
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+
+  nodeId      String      @db.ObjectId
+  node        LineageNode @relation(fields: [nodeId], references: [id])
+
+  title       String      // Event title (English)
+  titleAr     String?     // Arabic title
+  description String?     // Detailed description
+  descriptionAr String?   // Arabic description
+  date        DateTime?   // Approximate date (if known precisely)
+  yearHijri   Int?        // Hijri calendar year
+  yearCE      Int?        // Common Era year
+  eventType   EventType   // Typed for filtering
+
+  // ── Location ──
+  location    String?     // Place name
+  latitude    Float?
+  longitude   Float?
+
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([nodeId])
+  @@index([eventType])
+  @@index([yearCE])
+  @@map("historical_events")
+}
+
+enum EventType {
+  MIGRATION     // Tribal migration
+  BATTLE        // Military engagement
+  FOUNDING      // Establishment of a settlement or tribe
+  ALLIANCE      // Tribal alliance or pact
+  GENEALOGICAL  // Birth, death, marriage of notable figure
+  CULTURAL      // Cultural milestone
+  OTHER
+}
+
+// ──────────────────────────────────────────────
+// 🏷️ Tribal Symbols (Wasm / Brands)
+// ──────────────────────────────────────────────
+
+/// Tribal symbols, brands (Wasm/وسم), and emblems associated with
+/// tribes and clans. These are the traditional marks used to identify
+/// livestock, territory, and tribal identity.
+model TribalSymbol {
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+
+  nodeId      String      @db.ObjectId
+  node        LineageNode @relation(fields: [nodeId], references: [id])
+
+  name        String      // Symbol name
+  nameAr      String?     // Arabic name (الاسم بالعربية)
+  description String?     // Description and historical context
+  imageUrl    String      // URL to the symbol image (Vercel Blob)
+  svgPath     String?     // Raw SVG path data (for inline rendering)
+  symbolType  SymbolType  // Typed for filtering
+
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([nodeId])
+  @@index([symbolType])
+  @@map("tribal_symbols")
+}
+
+enum SymbolType {
+  WASM        // وسم — livestock brand
+  FLAG        // Tribal flag
+  EMBLEM      // Coat of arms / emblem
+  SEAL        // Official seal
+}
+
+// ──────────────────────────────────────────────
+// 🧬 DNA Markers
+// ──────────────────────────────────────────────
+
+/// DNA haplogroup markers linked to lineage branches for
+/// scientific validation of genealogical connections.
+model DnaMarker {
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+
+  nodeId      String      @db.ObjectId
+  node        LineageNode @relation(fields: [nodeId], references: [id])
+
+  haplogroup  String      // e.g., "J1-M267", "E1b1b"
+  type        DnaType     // Y-DNA, mtDNA, or Autosomal
+  subClade    String?     // Downstream subclade (e.g., "J1-FGC12")
+  confidence  Float?      // Confidence level (0.0 - 1.0)
+  sampleSize  Int?        // Number of tested individuals
+  source      String?     // Testing company or study reference
+  studyUrl    String?     // Link to original study or report
+  notes       String?
+
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([nodeId])
+  @@index([haplogroup])
+  @@index([type])
+  @@map("dna_markers")
+}
+
+enum DnaType {
+  Y_DNA       // Paternal lineage
+  MT_DNA      // Maternal lineage
+  AUTOSOMAL   // Ethnicity estimate
+}
+
+// ──────────────────────────────────────────────
+// 📋 Audit Log (Immutable)
+// ──────────────────────────────────────────────
+
+/// Immutable audit trail for all write operations on lineage data.
+/// Used for accountability, dispute resolution, and rollback support.
+model AuditLog {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+
+  userId      String    @db.ObjectId
+  user        User      @relation(fields: [userId], references: [id])
+
+  action      AuditAction
+  entityType  String    // "LineageNode", "Contribution", "DnaMarker", etc.
+  entityId    String    @db.ObjectId
+  before      Json?     // Snapshot before change (null for creates)
+  after       Json?     // Snapshot after change (null for deletes)
+  metadata    Json?     // Additional context (IP, user-agent, etc.)
+
+  createdAt   DateTime  @default(now())
+
+  @@index([userId])
+  @@index([entityType, entityId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+  RESTORE
+  APPROVE
+  REJECT
+  FLAG
+}
