@@ -25,7 +25,13 @@ export function Header() {
                     <Link href="/search" className="text-sm font-medium hover:text-primary transition-colors">
                         البحث
                     </Link>
-                    <Link href="/map" className="text-sm font-medium hover:text-primary transition-colors">
+                    <Link href="/contribute" className="text-sm font-medium hover:text-primary transition-colors">
+                        المساهمة
+                    </Link>
+                    <Link href="/verify" className="text-sm font-medium hover:text-primary transition-colors hidden md:inline-block">
+                        المراجعة
+                    </Link>
+                    <Link href="/map" className="text-sm font-medium hover:text-primary transition-colors hidden md:inline-block">
                         الخريطة
                     </Link>
                 </nav>
