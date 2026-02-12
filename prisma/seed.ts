@@ -1,319 +1,374 @@
-import { PrismaClient, NodeType, NodeStatus, EventType, NotificationType, UserRole } from '@prisma/client'
+import { PrismaClient, NodeType, NodeStatus, EventType, DnaType, UserRole, NotificationType } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
 async function main() {
     console.log('🌱 Starting seed...')
 
-    // Clear existing data (order matters for self-referencing relations)
+    // Clear existing data
     await prisma.notification.deleteMany()
+    await prisma.dnaMarker.deleteMany()
     await prisma.historicalEvent.deleteMany()
     await prisma.contribution.deleteMany()
-    // Nullify parent references first, then delete nodes
     await prisma.lineageNode.updateMany({ data: { parentId: null } })
     await prisma.lineageNode.deleteMany()
     console.log('🧹 Cleared existing data')
 
-    // ────────────────────────────────────────────
-    // 1. ADNAN Branch (Northern Arabs / العرب العدنانية)
-    // ────────────────────────────────────────────
+    // ═══════════════════════════════════════════════
+    // ADNANITE BRANCH (Northern Arabs / العرب العدنانية)
+    // Source: Ibn al-Kalbi, Jamharat al-Nasab; Ibn Hisham, al-Sirah
+    // ═══════════════════════════════════════════════
 
     const adnan = await prisma.lineageNode.create({
         data: {
-            name: 'Adnan',
-            nameAr: 'عدنان',
-            type: NodeType.ROOT,
-            status: NodeStatus.PUBLISHED,
-            generationDepth: 0,
-            biography: 'The traditional ancestor of the Adnanite Arabs, descended from Ishmael son of Abraham.',
-            biographyAr: 'الجد الجامع لقبائل العرب العدنانية، من ذرية إسماعيل بن إبراهيم عليهما السلام.',
-            birthPlace: 'مكة المكرمة',
-            era: 'ما قبل الإسلام',
-            latitude: 21.4225,
-            longitude: 39.8262,
-            childCount: 1,
+            name: 'Adnan', nameAr: 'عدنان', type: NodeType.ROOT, status: NodeStatus.PUBLISHED,
+            generationDepth: 0, childCount: 2,
+            title: 'أبو العرب العدنانية',
+            biography: 'The traditional ancestor of the Adnanite (Northern) Arabs. According to Islamic tradition, he is a descendant of Ishmael (Isma\'il) son of Abraham (Ibrahim). The Prophet Muhammad\'s lineage traces back to Adnan. His genealogy is documented in Ibn al-Kalbi\'s Jamharat al-Nasab and al-Tabari\'s Tarikh.',
+            biographyAr: 'الجد الجامع للعرب العدنانية (عرب الشمال). ينحدر من إسماعيل بن إبراهيم عليهما السلام حسب الإجماع الإسلامي. يرجع نسب النبي محمد ﷺ إليه. وثّق نسبه ابن الكلبي في جمهرة النسب والطبري في تاريخه.',
+            birthPlace: 'مكة المكرمة', era: 'ما قبل الإسلام',
+            latitude: 21.4225, longitude: 39.8262,
         },
     })
-    console.log(`✅ ${adnan.name}`)
 
     const maad = await prisma.lineageNode.create({
         data: {
-            name: "Ma'ad",
-            nameAr: 'معد',
-            type: NodeType.TRIBE,
-            status: NodeStatus.PUBLISHED,
-            generationDepth: 1,
-            parentId: adnan.id,
-            birthPlace: 'الحجاز',
-            era: 'ما قبل الإسلام',
-            latitude: 24.47,
-            longitude: 39.61,
-            childCount: 1,
+            name: "Ma'ad", nameAr: 'معد بن عدنان', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED,
+            generationDepth: 1, parentId: adnan.id, childCount: 1,
+            biography: 'Son of Adnan and father of Nizar. The forefather of the major northern Arab tribal confederations. Referenced in pre-Islamic poetry and in Jamharat al-Nasab.',
+            biographyAr: 'ابن عدنان وأبو نزار. جدّ القبائل العدنانية الكبرى. ورد ذكره في الشعر الجاهلي وجمهرة النسب.',
+            birthPlace: 'الحجاز', era: 'ما قبل الإسلام',
+            latitude: 24.47, longitude: 39.61,
         },
     })
-    console.log(`  ✅ ${maad.name}`)
 
     const nizar = await prisma.lineageNode.create({
         data: {
-            name: 'Nizar',
-            nameAr: 'نزار',
-            type: NodeType.TRIBE,
-            status: NodeStatus.PUBLISHED,
-            generationDepth: 2,
-            parentId: maad.id,
-            birthPlace: 'نجد',
-            era: 'ما قبل الإسلام',
-            latitude: 24.63,
-            longitude: 46.72,
-            childCount: 2,
+            name: 'Nizar', nameAr: 'نزار بن معد', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED,
+            generationDepth: 2, parentId: maad.id, childCount: 4,
+            biography: 'Son of Ma\'ad. Common ancestor of most northern Arab tribes. His four sons — Mudar, Rabi\'a, Iyad, and Anmar — founded the great tribal branches. Source: Ibn al-Kalbi, Jamharat al-Nasab.',
+            biographyAr: 'ابن معد. الجد المشترك لمعظم قبائل العرب الشمالية. أبناؤه الأربعة — مضر وربيعة وإياد وأنمار — أسسوا الفروع القبلية الكبرى. المصدر: ابن الكلبي، جمهرة النسب.',
+            birthPlace: 'نجد', era: 'ما قبل الإسلام',
+            latitude: 24.63, longitude: 46.72,
         },
     })
-    console.log(`    ✅ ${nizar.name}`)
+
+    // ── Nizar's four sons ──
 
     const mudar = await prisma.lineageNode.create({
         data: {
-            name: 'Mudar',
-            nameAr: 'مضر',
-            type: NodeType.TRIBE,
-            status: NodeStatus.PUBLISHED,
-            generationDepth: 3,
-            parentId: nizar.id,
-            birthPlace: 'تهامة',
-            era: 'ما قبل الإسلام',
-            latitude: 20.45,
-            longitude: 41.05,
-            childCount: 0,
+            name: 'Mudar', nameAr: 'مضر بن نزار', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED,
+            generationDepth: 3, parentId: nizar.id, childCount: 2,
+            title: 'مضر الحمراء',
+            biography: 'Son of Nizar. Progenitor of the Mudarite tribes, the largest Adnanite confederation. Split into two branches: Qays \'Aylan and Khindif. The Quraysh tribe descends from this line. Source: Jamharat al-Nasab.',
+            biographyAr: 'ابن نزار. جدّ قبائل مضر، أكبر تجمع عدناني. انقسمت إلى فرعين: قيس عيلان وخندف. قبيلة قريش من هذا النسل. المصدر: جمهرة النسب.',
+            birthPlace: 'تهامة', era: 'ما قبل الإسلام',
+            latitude: 20.45, longitude: 41.05,
         },
     })
-    console.log(`      ✅ ${mudar.name}`)
 
     const rabia = await prisma.lineageNode.create({
         data: {
-            name: "Rabi'a",
-            nameAr: 'ربيعة',
-            type: NodeType.TRIBE,
-            status: NodeStatus.PUBLISHED,
-            generationDepth: 3,
-            parentId: nizar.id,
-            birthPlace: 'شرق الجزيرة العربية',
-            era: 'ما قبل الإسلام',
-            latitude: 26.43,
-            longitude: 50.10,
-            childCount: 0,
+            name: "Rabi'a", nameAr: 'ربيعة بن نزار', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED,
+            generationDepth: 3, parentId: nizar.id, childCount: 5,
+            biography: 'Son of Nizar. Progenitor of the Rabi\'a tribal confederation. His descendants — Bakr, Taghlib, \'Anazah, Abdul Qais, and Hanifa — dominated eastern and central Arabia. Source: Ibn al-Kalbi.',
+            biographyAr: 'ابن نزار. جدّ قبائل ربيعة. أبناؤه — بكر وتغلب وعنزة وعبد القيس وحنيفة — سيطروا على شرق ووسط الجزيرة العربية. المصدر: ابن الكلبي.',
+            birthPlace: 'شرق الجزيرة العربية', era: 'ما قبل الإسلام',
+            latitude: 26.43, longitude: 50.10,
         },
     })
-    console.log(`      ✅ ${rabia.name}`)
 
-    // ────────────────────────────────────────────
-    // 2. QAHTAN Branch (Southern Arabs / العرب القحطانية)
-    // ────────────────────────────────────────────
+    const iyad = await prisma.lineageNode.create({
+        data: {
+            name: 'Iyad', nameAr: 'إياد بن نزار', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED,
+            generationDepth: 3, parentId: nizar.id, childCount: 0,
+            biography: 'Son of Nizar. An ancient tribe that migrated to Mesopotamia. Mentioned by al-Tabari and in pre-Islamic poetry.',
+            biographyAr: 'ابن نزار. قبيلة قديمة هاجرت إلى بلاد الرافدين. ذكرها الطبري وفي الشعر الجاهلي.',
+            birthPlace: 'العراق', era: 'ما قبل الإسلام',
+            latitude: 33.31, longitude: 44.37,
+        },
+    })
+
+    const anmar = await prisma.lineageNode.create({
+        data: {
+            name: 'Anmar', nameAr: 'أنمار بن نزار', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED,
+            generationDepth: 3, parentId: nizar.id, childCount: 0,
+            biography: 'Son of Nizar. Ancestor of several tribes that settled in Yemen and the southern highlands. Source: Ibn al-Kalbi.',
+            biographyAr: 'ابن نزار. جدّ عدة قبائل استقرت في اليمن والمرتفعات الجنوبية. المصدر: ابن الكلبي.',
+            birthPlace: 'عسير', era: 'ما قبل الإسلام',
+            latitude: 18.22, longitude: 42.50,
+        },
+    })
+
+    // ── Mudar's two branches ──
+
+    const qaysAylan = await prisma.lineageNode.create({
+        data: {
+            name: "Qays 'Aylan", nameAr: 'قيس عيلان', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED,
+            generationDepth: 4, parentId: mudar.id, childCount: 3,
+            biography: 'Major branch of Mudar. Includes the warrior tribes Hawazin, Ghatafan, and Sulaym. Dominated Najd. Source: Jamharat al-Nasab.',
+            biographyAr: 'فرع رئيسي من مضر. يشمل قبائل هوازن وغطفان وسُليم المحاربة. سيطر على نجد. المصدر: جمهرة النسب.',
+            birthPlace: 'نجد', era: 'ما قبل الإسلام',
+            latitude: 25.00, longitude: 45.00,
+        },
+    })
+
+    const khindif = await prisma.lineageNode.create({
+        data: {
+            name: 'Khindif', nameAr: 'خندف (إلياس بن مضر)', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED,
+            generationDepth: 4, parentId: mudar.id, childCount: 4,
+            alternateNames: ['Ilyas ibn Mudar', 'إلياس'],
+            biography: 'Also known as Ilyas ibn Mudar. The branch that includes Kinanah (and thus Quraysh), Tamim, Hudhayl, and Asad. Source: Ibn Hisham, al-Sirah.',
+            biographyAr: 'يُعرف أيضًا بإلياس بن مضر. الفرع الذي يشمل كنانة (وبالتالي قريش) وتميم وهذيل وأسد. المصدر: ابن هشام، السيرة.',
+            birthPlace: 'الحجاز', era: 'ما قبل الإسلام',
+            latitude: 23.00, longitude: 40.00,
+        },
+    })
+
+    // ── Qays 'Aylan tribes ──
+
+    await prisma.lineageNode.createMany({
+        data: [
+            { name: 'Hawazin', nameAr: 'هوازن', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED, generationDepth: 5, parentId: qaysAylan.id, childCount: 0, biography: 'One of the largest Qaysite tribes. Fought against the Prophet at the Battle of Hunayn (630 CE). Source: al-Tabari.', biographyAr: 'من أكبر قبائل قيس. حاربت النبي ﷺ في غزوة حنين (630م). المصدر: الطبري.', birthPlace: 'الطائف', era: 'ما قبل الإسلام', latitude: 21.27, longitude: 40.42 },
+            { name: 'Ghatafan', nameAr: 'غطفان', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED, generationDepth: 5, parentId: qaysAylan.id, childCount: 0, biography: 'A powerful Qaysite tribe in Najd. Allied with Quraysh in the Battle of the Trench. Source: Ibn Hisham.', biographyAr: 'قبيلة قيسية قوية في نجد. تحالفت مع قريش في غزوة الخندق. المصدر: ابن هشام.', birthPlace: 'نجد', era: 'ما قبل الإسلام', latitude: 26.30, longitude: 43.50 },
+            { name: 'Sulaym', nameAr: 'بنو سُليم', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED, generationDepth: 5, parentId: qaysAylan.id, childCount: 0, biography: 'A Qaysite tribe known for their role in the early Islamic conquests and migration to North Africa. Source: al-Tabari.', biographyAr: 'قبيلة قيسية اشتهرت بدورها في الفتوحات الإسلامية وهجرتها إلى شمال أفريقيا. المصدر: الطبري.', birthPlace: 'الحجاز', era: 'ما قبل الإسلام', latitude: 23.50, longitude: 40.80 },
+        ],
+    })
+
+    // ── Khindif tribes ──
+
+    const kinanah = await prisma.lineageNode.create({
+        data: {
+            name: 'Kinanah', nameAr: 'كنانة', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED,
+            generationDepth: 5, parentId: khindif.id, childCount: 1,
+            biography: 'A major Mudarite tribe from which Quraysh descends. Settled around Mecca and the Tihama. Source: Ibn al-Kalbi.',
+            biographyAr: 'قبيلة مضرية كبرى تنحدر منها قريش. استقرت حول مكة وتهامة. المصدر: ابن الكلبي.',
+            birthPlace: 'مكة المكرمة', era: 'ما قبل الإسلام',
+            latitude: 21.50, longitude: 39.80,
+        },
+    })
+
+    await prisma.lineageNode.createMany({
+        data: [
+            { name: 'Tamim', nameAr: 'بنو تميم', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED, generationDepth: 5, parentId: khindif.id, childCount: 0, biography: 'One of the largest Arab tribes. Dominated eastern Najd. Famous for their poetry and oratory. The Prophet said: "The last to follow the Dajjal will be from Tamim." Source: al-Tabari, Sahih Muslim.', biographyAr: 'من أكبر القبائل العربية. سيطرت على شرق نجد. اشتهرت بالشعر والخطابة. قال النبي ﷺ: "آخر من يتبع الدجال من تميم." المصدر: الطبري، صحيح مسلم.', birthPlace: 'اليمامة', era: 'ما قبل الإسلام', latitude: 24.15, longitude: 47.30 },
+            { name: 'Hudhayl', nameAr: 'هُذيل', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED, generationDepth: 5, parentId: khindif.id, childCount: 0, biography: 'A Mudarite tribe near Mecca known for their eloquent poetry. Major figures include Abu Dhu\'ayb al-Hudhali. Source: al-Aghani.', biographyAr: 'قبيلة مضرية قرب مكة اشتهرت بالشعر الفصيح. من أبرز شعرائها أبو ذؤيب الهذلي. المصدر: الأغاني.', birthPlace: 'قرب مكة', era: 'ما قبل الإسلام', latitude: 21.60, longitude: 40.20 },
+            { name: 'Asad', nameAr: 'بنو أسد', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED, generationDepth: 5, parentId: khindif.id, childCount: 0, biography: 'A Mudarite tribe in central Najd. Produced notable pre-Islamic poets. Source: Jamharat al-Nasab.', biographyAr: 'قبيلة مضرية في وسط نجد. أنجبت شعراء جاهليين بارزين. المصدر: جمهرة النسب.', birthPlace: 'نجد', era: 'ما قبل الإسلام', latitude: 25.50, longitude: 44.00 },
+        ],
+    })
+
+    // ── Quraysh ──
+
+    const quraysh = await prisma.lineageNode.create({
+        data: {
+            name: 'Quraysh', nameAr: 'قريش', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED,
+            generationDepth: 6, parentId: kinanah.id, childCount: 1,
+            title: 'سادة مكة',
+            biography: 'The ruling tribe of Mecca and custodians of the Kaaba. The Prophet Muhammad ﷺ was from Quraysh. Qusai ibn Kilab unified their authority over Mecca circa 480 CE. Named in the Quran (Surah Quraysh, 106). Source: Ibn Hisham, al-Sirah.',
+            biographyAr: 'القبيلة الحاكمة في مكة وسدنة الكعبة. النبي محمد ﷺ من قريش. وحّد قصي بن كلاب سلطتهم على مكة حوالي 480م. ورد ذكرها في القرآن (سورة قريش، 106). المصدر: ابن هشام، السيرة.',
+            birthPlace: 'مكة المكرمة', era: 'ما قبل الإسلام',
+            latitude: 21.4225, longitude: 39.8262,
+        },
+    })
+
+    const hashim = await prisma.lineageNode.create({
+        data: {
+            name: 'Banu Hashim', nameAr: 'بنو هاشم', type: NodeType.CLAN, status: NodeStatus.PUBLISHED,
+            generationDepth: 7, parentId: quraysh.id, childCount: 0,
+            title: 'آل البيت',
+            biography: 'The clan of the Prophet Muhammad ﷺ within Quraysh. Named after Hashim ibn Abd Manaf, who established the trade caravans to Yemen and Syria. Source: Ibn Hisham.',
+            biographyAr: 'بطن النبي محمد ﷺ من قريش. سُمي نسبة إلى هاشم بن عبد مناف الذي أسس رحلتي الشتاء والصيف التجاريتين. المصدر: ابن هشام.',
+            birthPlace: 'مكة المكرمة', era: 'ما قبل الإسلام',
+            latitude: 21.4225, longitude: 39.8262,
+        },
+    })
+
+    // ── Rabi'a tribes ──
+
+    const bakr = await prisma.lineageNode.create({
+        data: {
+            name: "Bakr ibn Wa'il", nameAr: 'بكر بن وائل', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED,
+            generationDepth: 4, parentId: rabia.id, childCount: 0,
+            biography: 'A major Rabi\'a tribe in eastern Arabia and Mesopotamia. Defeated the Sassanid Persians at the Battle of Dhi Qar (~609 CE), the first Arab victory over Persia. Source: al-Tabari.',
+            biographyAr: 'قبيلة ربعية كبرى في شرق الجزيرة والعراق. هزمت الفرس الساسانيين في معركة ذي قار (~609م)، أول انتصار عربي على فارس. المصدر: الطبري.',
+            birthPlace: 'البحرين (التاريخية)', era: 'ما قبل الإسلام',
+            latitude: 26.07, longitude: 50.55,
+        },
+    })
+
+    await prisma.lineageNode.createMany({
+        data: [
+            { name: 'Taghlib', nameAr: 'تغلب', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED, generationDepth: 4, parentId: rabia.id, childCount: 0, biography: 'A Christian Rabi\'a tribe in Mesopotamia. Fought the famous Basus War against Bakr. Source: al-Aghani.', biographyAr: 'قبيلة ربعية مسيحية في الجزيرة الفراتية. خاضت حرب البسوس الشهيرة ضد بكر. المصدر: الأغاني.', birthPlace: 'الجزيرة الفراتية', era: 'ما قبل الإسلام', latitude: 36.40, longitude: 42.00 },
+            { name: "'Anazah", nameAr: 'عنزة', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED, generationDepth: 4, parentId: rabia.id, childCount: 0, biography: 'One of the largest Arab tribes today. A Rabi\'a tribe that spread across Arabia, Syria, and Iraq. Source: Jamharat al-Nasab.', biographyAr: 'من أكبر القبائل العربية اليوم. قبيلة ربعية انتشرت في الجزيرة والشام والعراق. المصدر: جمهرة النسب.', birthPlace: 'نجد', era: 'ما قبل الإسلام', latitude: 28.00, longitude: 42.00 },
+            { name: "'Abdul Qais", nameAr: 'عبد القيس', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED, generationDepth: 4, parentId: rabia.id, childCount: 0, biography: 'A Rabi\'a tribe settled in Bahrain (historical region). Among the first to accept Islam. Source: Sahih al-Bukhari, al-Tabari.', biographyAr: 'قبيلة ربعية استقرت في البحرين (الإقليم التاريخي). من أوائل من أسلم. المصدر: صحيح البخاري، الطبري.', birthPlace: 'البحرين', era: 'ما قبل الإسلام', latitude: 26.22, longitude: 50.20 },
+            { name: 'Hanifa', nameAr: 'بنو حنيفة', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED, generationDepth: 4, parentId: rabia.id, childCount: 0, biography: 'A Rabi\'a tribe in Yamama (central Arabia). Known for the Ridda Wars after the Prophet\'s death. Source: al-Tabari.', biographyAr: 'قبيلة ربعية في اليمامة (وسط الجزيرة). اشتهرت بحروب الردة بعد وفاة النبي ﷺ. المصدر: الطبري.', birthPlace: 'اليمامة', era: 'ما قبل الإسلام', latitude: 24.60, longitude: 46.00 },
+        ],
+    })
+
+    // ═══════════════════════════════════════════════
+    // QAHTANITE BRANCH (Southern Arabs / العرب القحطانية)
+    // Source: Ibn al-Kalbi; al-Hamdani, al-Iklil
+    // ═══════════════════════════════════════════════
 
     const qahtan = await prisma.lineageNode.create({
         data: {
-            name: 'Qahtan',
-            nameAr: 'قحطان',
-            type: NodeType.ROOT,
-            status: NodeStatus.PUBLISHED,
-            generationDepth: 0,
-            biography: 'The traditional ancestor of the Qahtanite Arabs from southern Arabia.',
-            biographyAr: 'الجد الجامع لقبائل العرب القحطانية من جنوب الجزيرة العربية.',
-            birthPlace: 'اليمن',
-            era: 'ما قبل الإسلام',
-            latitude: 15.37,
-            longitude: 44.19,
-            childCount: 1,
+            name: 'Qahtan', nameAr: 'قحطان', type: NodeType.ROOT, status: NodeStatus.PUBLISHED,
+            generationDepth: 0, childCount: 1,
+            title: 'أبو العرب القحطانية',
+            biography: 'The traditional ancestor of the Qahtanite (Southern) Arabs, also known as al-\'Arab al-\'Aribah (the "genuine Arabs"). Often identified with the biblical Joktan. All Yemeni tribes trace their ancestry to him. Source: al-Hamdani, al-Iklil; Ibn al-Kalbi.',
+            biographyAr: 'الجد الجامع للعرب القحطانية، المعروفين بالعرب العاربة. يُعرّف أحيانًا بيقطان التوراتي. جميع قبائل اليمن ترجع إليه. المصدر: الهمداني، الإكليل؛ ابن الكلبي.',
+            birthPlace: 'اليمن', era: 'ما قبل الإسلام',
+            latitude: 15.37, longitude: 44.19,
         },
     })
-    console.log(`✅ ${qahtan.name}`)
 
     const yarub = await prisma.lineageNode.create({
         data: {
-            name: "Ya'rub",
-            nameAr: 'يعرب',
-            type: NodeType.TRIBE,
-            status: NodeStatus.PUBLISHED,
-            generationDepth: 1,
-            parentId: qahtan.id,
-            birthPlace: 'حضرموت',
-            era: 'ما قبل الإسلام',
-            latitude: 15.95,
-            longitude: 48.78,
-            childCount: 1,
+            name: "Ya'rub", nameAr: 'يعرب بن قحطان', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED,
+            generationDepth: 1, parentId: qahtan.id, childCount: 1,
+            biography: 'Son of Qahtan. Considered by some traditions as the first to speak Arabic. Source: al-Hamdani.',
+            biographyAr: 'ابن قحطان. يعتبره بعض المؤرخين أول من تكلم العربية. المصدر: الهمداني.',
+            birthPlace: 'حضرموت', era: 'ما قبل الإسلام',
+            latitude: 15.95, longitude: 48.78,
         },
     })
-    console.log(`  ✅ ${yarub.name}`)
 
     const yashjub = await prisma.lineageNode.create({
         data: {
-            name: 'Yashjub',
-            nameAr: 'يشجب',
-            type: NodeType.TRIBE,
-            status: NodeStatus.PUBLISHED,
-            generationDepth: 2,
-            parentId: yarub.id,
-            birthPlace: 'عُمان',
-            era: 'ما قبل الإسلام',
-            latitude: 23.58,
-            longitude: 58.38,
-            childCount: 1,
+            name: 'Yashjub', nameAr: 'يشجب بن يعرب', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED,
+            generationDepth: 2, parentId: yarub.id, childCount: 1,
+            biography: 'Son of Ya\'rub. Father of Saba\'. Source: al-Hamdani, al-Iklil.',
+            biographyAr: 'ابن يعرب وأبو سبأ. المصدر: الهمداني، الإكليل.',
+            birthPlace: 'عُمان', era: 'ما قبل الإسلام',
+            latitude: 23.58, longitude: 58.38,
         },
     })
-    console.log(`    ✅ ${yashjub.name}`)
 
     const saba = await prisma.lineageNode.create({
         data: {
-            name: 'Saba',
-            nameAr: 'سبأ',
-            type: NodeType.TRIBE,
-            status: NodeStatus.PUBLISHED,
-            generationDepth: 3,
-            parentId: yashjub.id,
-            birthPlace: 'مأرب',
-            era: 'ما قبل الإسلام',
-            latitude: 15.46,
-            longitude: 45.35,
-            childCount: 0,
+            name: "Saba'", nameAr: 'سبأ بن يشجب', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED,
+            generationDepth: 3, parentId: yashjub.id, childCount: 2,
+            title: 'عبد شمس',
+            biography: 'Son of Yashjub. Progenitor of all southern Arab tribes through his two sons Himyar and Kahlan. The Kingdom of Saba (Sheba) is named after him. Mentioned in the Quran (34:15). Source: al-Hamdani; Quran.',
+            biographyAr: 'ابن يشجب. جدّ جميع قبائل الجنوب من ابنيه حِمير وكهلان. مملكة سبأ سُميت باسمه. ذُكر في القرآن (سبأ: 15). المصدر: الهمداني؛ القرآن.',
+            birthPlace: 'مأرب', era: 'ما قبل الإسلام',
+            latitude: 15.46, longitude: 45.35,
         },
     })
-    console.log(`      ✅ ${saba.name}`)
 
-    // ────────────────────────────────────────────
-    // 3. HISTORICAL EVENTS
-    // ────────────────────────────────────────────
+    // ── Saba's two sons ──
+
+    const himyar = await prisma.lineageNode.create({
+        data: {
+            name: 'Himyar', nameAr: 'حِمير بن سبأ', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED,
+            generationDepth: 4, parentId: saba.id, childCount: 2,
+            biography: 'Son of Saba\'. Founded the Himyarite Kingdom which succeeded the Sabaean Kingdom. Dominated southern Arabia until the 6th century CE. Source: al-Hamdani, al-Iklil.',
+            biographyAr: 'ابن سبأ. أسس المملكة الحميرية التي خلفت مملكة سبأ. سيطر على جنوب الجزيرة حتى القرن السادس الميلادي. المصدر: الهمداني، الإكليل.',
+            birthPlace: 'ظفار (اليمن)', era: 'ما قبل الإسلام',
+            latitude: 14.20, longitude: 44.40,
+        },
+    })
+
+    const kahlan = await prisma.lineageNode.create({
+        data: {
+            name: 'Kahlan', nameAr: 'كهلان بن سبأ', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED,
+            generationDepth: 4, parentId: saba.id, childCount: 7,
+            biography: 'Son of Saba\'. Progenitor of the Kahlanite tribes who migrated from Yemen after the Marib Dam collapse. His descendants include the Azd, Kindah, Tayy, Madhhij, Hamdan, Lakhm, and Judham. Source: Ibn al-Kalbi.',
+            biographyAr: 'ابن سبأ. جدّ قبائل كهلان التي هاجرت من اليمن بعد انهيار سد مأرب. من نسله الأزد وكندة وطيئ ومذحج وهمدان ولخم وجذام. المصدر: ابن الكلبي.',
+            birthPlace: 'مأرب', era: 'ما قبل الإسلام',
+            latitude: 15.46, longitude: 45.35,
+        },
+    })
+
+    // ── Himyar subtribes ──
+    await prisma.lineageNode.createMany({
+        data: [
+            { name: "Quda'a", nameAr: 'قضاعة', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED, generationDepth: 5, parentId: himyar.id, childCount: 0, biography: 'A major Himyarite confederation. Genealogists debate whether they belong to Himyar or Adnan. Source: Jamharat al-Nasab.', biographyAr: 'تحالف حميري كبير. اختلف النسابون في نسبتهم لحمير أو عدنان. المصدر: جمهرة النسب.', birthPlace: 'اليمن', era: 'ما قبل الإسلام', latitude: 14.80, longitude: 44.00 },
+            { name: 'Zaid al-Jamhur', nameAr: 'زيد الجمهور', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED, generationDepth: 5, parentId: himyar.id, childCount: 0, biography: 'A Himyarite sept. Source: al-Hamdani.', biographyAr: 'بطن من حمير. المصدر: الهمداني.', birthPlace: 'اليمن', era: 'ما قبل الإسلام', latitude: 14.50, longitude: 44.20 },
+        ],
+    })
+
+    // ── Kahlan subtribes ──
+
+    const azd = await prisma.lineageNode.create({
+        data: {
+            name: 'Azd', nameAr: 'الأزد', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED,
+            generationDepth: 5, parentId: kahlan.id, childCount: 3,
+            biography: 'One of the largest Qahtanite tribes. After the Marib Dam collapse, the Azd migrated to Oman, Hejaz, and Syria. Branches include the Aws and Khazraj of Medina and the Ghassanids. Source: al-Hamdani; al-Tabari.',
+            biographyAr: 'من أكبر قبائل قحطان. بعد انهيار سد مأرب هاجر الأزد إلى عُمان والحجاز والشام. من فروعهم الأوس والخزرج في المدينة والغساسنة. المصدر: الهمداني؛ الطبري.',
+            birthPlace: 'مأرب ثم تفرقوا', era: 'ما قبل الإسلام',
+            latitude: 15.46, longitude: 45.35,
+        },
+    })
+
+    await prisma.lineageNode.createMany({
+        data: [
+            { name: 'Kindah', nameAr: 'كندة', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED, generationDepth: 5, parentId: kahlan.id, childCount: 0, biography: 'A Kahlanite tribe from Hadramawt. Established the Kingdom of Kinda (~425-528 CE) in central Arabia. Imru\' al-Qais, the greatest pre-Islamic poet, was from Kinda. Source: al-Tabari.', biographyAr: 'قبيلة كهلانية من حضرموت. أسست مملكة كندة (~425-528م) في وسط الجزيرة. امرؤ القيس أعظم شعراء الجاهلية كان كندياً. المصدر: الطبري.', birthPlace: 'حضرموت', era: 'ما قبل الإسلام', latitude: 15.90, longitude: 48.80 },
+            { name: "Tayy'", nameAr: 'طيئ', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED, generationDepth: 5, parentId: kahlan.id, childCount: 0, biography: 'A Kahlanite tribe settled around the Aja and Salma mountains in northern Najd. Famous for Hatim al-Ta\'i\'s legendary generosity. Source: al-Tabari.', biographyAr: 'قبيلة كهلانية استقرت حول جبلي أجا وسلمى في شمال نجد. اشتهرت بكرم حاتم الطائي الأسطوري. المصدر: الطبري.', birthPlace: 'جبل شمر', era: 'ما قبل الإسلام', latitude: 27.50, longitude: 41.70 },
+            { name: 'Madhhij', nameAr: 'مذحج', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED, generationDepth: 5, parentId: kahlan.id, childCount: 0, biography: 'A major Kahlanite confederation in Yemen. Played a significant role in the Islamic conquests. Source: al-Hamdani.', biographyAr: 'تحالف كهلاني كبير في اليمن. لعب دوراً مهماً في الفتوحات الإسلامية. المصدر: الهمداني.', birthPlace: 'اليمن', era: 'ما قبل الإسلام', latitude: 14.80, longitude: 45.00 },
+            { name: 'Hamdan', nameAr: 'همدان', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED, generationDepth: 5, parentId: kahlan.id, childCount: 0, biography: 'A major Yemeni Kahlanite tribe. Centered in San\'a and its highlands. Strong supporters of Islam. Source: al-Hamdani, al-Iklil.', biographyAr: 'قبيلة كهلانية يمنية كبرى. تمركزت في صنعاء ومرتفعاتها. من أقوى أنصار الإسلام. المصدر: الهمداني، الإكليل.', birthPlace: 'صنعاء', era: 'ما قبل الإسلام', latitude: 15.37, longitude: 44.19 },
+            { name: 'Lakhm', nameAr: 'لخم', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED, generationDepth: 5, parentId: kahlan.id, childCount: 0, biography: 'A Kahlanite tribe that founded the Lakhmid Kingdom of al-Hira (~300-602 CE) in southern Iraq. Vassals of the Sassanid Empire. Source: al-Tabari.', biographyAr: 'قبيلة كهلانية أسست مملكة اللخميين في الحيرة (~300-602م) جنوب العراق. كانوا أتباع الإمبراطورية الساسانية. المصدر: الطبري.', birthPlace: 'الحيرة، العراق', era: 'ما قبل الإسلام', latitude: 31.98, longitude: 44.45 },
+            { name: 'Judham', nameAr: 'جذام', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED, generationDepth: 5, parentId: kahlan.id, childCount: 0, biography: 'A Kahlanite tribe that migrated to Palestine and Egypt. Source: Ibn al-Kalbi.', biographyAr: 'قبيلة كهلانية هاجرت إلى فلسطين ومصر. المصدر: ابن الكلبي.', birthPlace: 'فلسطين', era: 'ما قبل الإسلام', latitude: 31.90, longitude: 35.20 },
+        ],
+    })
+
+    // ── Azd subtribes ──
+    await prisma.lineageNode.createMany({
+        data: [
+            { name: 'Aws', nameAr: 'الأوس', type: NodeType.CLAN, status: NodeStatus.PUBLISHED, generationDepth: 6, parentId: azd.id, childCount: 0, biography: 'An Azdite tribe of Yathrib (Medina). Together with the Khazraj, they formed the Ansar who supported the Prophet. Source: Ibn Hisham, al-Sirah.', biographyAr: 'قبيلة أزدية في يثرب (المدينة). شكّلوا مع الخزرج الأنصار الذين نصروا النبي ﷺ. المصدر: ابن هشام، السيرة.', birthPlace: 'يثرب (المدينة المنورة)', era: 'ما قبل الإسلام', latitude: 24.47, longitude: 39.61 },
+            { name: 'Khazraj', nameAr: 'الخزرج', type: NodeType.CLAN, status: NodeStatus.PUBLISHED, generationDepth: 6, parentId: azd.id, childCount: 0, biography: 'An Azdite tribe of Yathrib. The larger of the two Ansar tribes. Sa\'d ibn \'Ubadah was their chief. Source: Ibn Hisham.', biographyAr: 'قبيلة أزدية في يثرب. أكبر القبيلتين الأنصاريتين. سعد بن عبادة كان سيدهم. المصدر: ابن هشام.', birthPlace: 'يثرب (المدينة المنورة)', era: 'ما قبل الإسلام', latitude: 24.47, longitude: 39.61 },
+            { name: 'Ghassan', nameAr: 'غسان', type: NodeType.CLAN, status: NodeStatus.PUBLISHED, generationDepth: 6, parentId: azd.id, childCount: 0, biography: 'An Azdite tribe that established the Ghassanid Kingdom (~220-638 CE) in the Levant as Byzantine vassals. Source: al-Tabari.', biographyAr: 'قبيلة أزدية أسست مملكة الغساسنة (~220-638م) في الشام كأتباع للبيزنطيين. المصدر: الطبري.', birthPlace: 'الشام', era: 'ما قبل الإسلام', latitude: 33.51, longitude: 36.29 },
+        ],
+    })
+
+    console.log('✅ Created all lineage nodes')
+
+    // ═══════════════════════════════════════════════
+    // HISTORICAL EVENTS
+    // Source: al-Tabari, Tarikh; Ibn Hisham, al-Sirah
+    // ═══════════════════════════════════════════════
     console.log('\n📜 Creating historical events...')
 
     await prisma.historicalEvent.createMany({
         data: [
-            {
-                nodeId: saba.id,
-                title: 'Kingdom of Saba Founded',
-                titleAr: 'تأسيس مملكة سبأ',
-                description: 'The Kingdom of Saba (Sheba) was established in Marib with the great dam.',
-                descriptionAr: 'تأسيس مملكة سبأ في مأرب وبناء سد مأرب العظيم.',
-                yearCE: -1000,
-                eventType: EventType.FOUNDING,
-                location: 'مأرب، اليمن',
-                latitude: 15.46,
-                longitude: 45.35,
-            },
-            {
-                nodeId: saba.id,
-                title: 'Marib Dam Collapse',
-                titleAr: 'انهيار سد مأرب',
-                description: 'The collapse of the Great Dam of Marib led to the dispersal of Yemeni tribes (سيل العرم).',
-                descriptionAr: 'انهيار سد مأرب أدى إلى تفرق القبائل اليمنية فيما عُرف بسيل العرم.',
-                yearCE: 575,
-                eventType: EventType.MIGRATION,
-                location: 'مأرب، اليمن',
-                latitude: 15.43,
-                longitude: 45.33,
-            },
-            {
-                nodeId: qahtan.id,
-                title: 'Azd Migration Northward',
-                titleAr: 'هجرة الأزد شمالًا',
-                description: 'After the dam collapse, the Azd tribe migrated to Oman, Hejaz, and the Levant.',
-                descriptionAr: 'بعد انهيار السد، هاجرت قبيلة الأزد إلى عمان والحجاز والشام.',
-                yearCE: 580,
-                eventType: EventType.MIGRATION,
-                location: 'من اليمن إلى الشمال',
-                latitude: 19.50,
-                longitude: 43.00,
-            },
-            {
-                nodeId: rabia.id,
-                title: 'Battle of Dhi Qar',
-                titleAr: 'معركة ذي قار',
-                description: 'A major pre-Islamic battle where Arab tribes under Banu Bakr (Rabi\'a) defeated the Sassanids.',
-                descriptionAr: 'معركة كبرى انتصر فيها العرب من بني بكر (ربيعة) على الفرس الساسانيين.',
-                yearCE: 609,
-                eventType: EventType.BATTLE,
-                location: 'ذي قار، العراق',
-                latitude: 31.05,
-                longitude: 46.25,
-            },
-            {
-                nodeId: mudar.id,
-                title: 'Quraysh Custodianship of Kaaba',
-                titleAr: 'تولي قريش سدانة الكعبة',
-                description: 'Qusai ibn Kilab of Quraysh (Mudar branch) unified custodianship of the Kaaba.',
-                descriptionAr: 'قصي بن كلاب من قريش (فرع مضر) وحّد سدانة الكعبة المشرفة.',
-                yearCE: 480,
-                eventType: EventType.CULTURAL,
-                location: 'مكة المكرمة',
-                latitude: 21.4225,
-                longitude: 39.8262,
-            },
-            {
-                nodeId: adnan.id,
-                title: 'Hajj Pilgrimage Established',
-                titleAr: 'تأسيس شعائر الحج',
-                description: 'The pre-Islamic Hajj pilgrimage tradition was passed through the descendants of Adnan.',
-                descriptionAr: 'توارث أبناء عدنان تقاليد الحج في مكة المكرمة.',
-                yearCE: -200,
-                eventType: EventType.CULTURAL,
-                location: 'مكة المكرمة',
-                latitude: 21.42,
-                longitude: 39.83,
-            },
-            {
-                nodeId: nizar.id,
-                title: 'Nizar Tribal Confederation',
-                titleAr: 'تحالف بني نزار',
-                description: 'Formation of the great tribal confederation under Nizar controlling central Arabia.',
-                descriptionAr: 'تشكيل التحالف القبلي الكبير تحت بني نزار للسيطرة على وسط الجزيرة.',
-                yearCE: 300,
-                eventType: EventType.ALLIANCE,
-                location: 'نجد',
-                latitude: 24.63,
-                longitude: 46.72,
-            },
-            {
-                nodeId: yarub.id,
-                title: 'Founding of Hadramawtian Kingdom',
-                titleAr: 'تأسيس مملكة حضرموت',
-                description: 'The ancient kingdom of Hadramawt was established by descendants of Ya\'rub.',
-                descriptionAr: 'تأسيس مملكة حضرموت القديمة من قبل أبناء يعرب.',
-                yearCE: -800,
-                eventType: EventType.FOUNDING,
-                location: 'حضرموت، اليمن',
-                latitude: 15.95,
-                longitude: 48.78,
-            },
-            {
-                nodeId: yashjub.id,
-                title: 'Omani Maritime Trade',
-                titleAr: 'التجارة البحرية العمانية',
-                description: 'Tribes in Oman developed extensive maritime trade routes to East Africa and India.',
-                descriptionAr: 'طورت القبائل في عمان طرقًا تجارية بحرية واسعة إلى شرق أفريقيا والهند.',
-                yearCE: 100,
-                eventType: EventType.CULTURAL,
-                location: 'مسقط، عُمان',
-                latitude: 23.61,
-                longitude: 58.54,
-            },
-            {
-                nodeId: maad.id,
-                title: 'Hejaz Trade Route Control',
-                titleAr: 'السيطرة على طريق تجارة الحجاز',
-                description: 'Ma\'ad tribes controlled the vital incense trade route through Hejaz.',
-                descriptionAr: 'سيطرت قبائل معد على طريق تجارة البخور الحيوي عبر الحجاز.',
-                yearCE: 200,
-                eventType: EventType.CULTURAL,
-                location: 'المدينة المنورة',
-                latitude: 24.47,
-                longitude: 39.61,
-            },
+            { nodeId: saba.id, title: 'Kingdom of Saba Founded', titleAr: 'تأسيس مملكة سبأ', description: 'The Kingdom of Saba (Sheba) was established in Ma\'rib, featuring the Great Dam — one of the engineering wonders of the ancient world. Source: inscriptions; al-Hamdani.', descriptionAr: 'تأسيس مملكة سبأ في مأرب، وبناء سد مأرب العظيم — أحد عجائب الهندسة في العالم القديم. المصدر: النقوش؛ الهمداني.', yearCE: -1000, eventType: EventType.FOUNDING, location: 'مأرب، اليمن', latitude: 15.46, longitude: 45.35 },
+            { nodeId: saba.id, title: 'Marib Dam Collapse (Sayl al-\'Arim)', titleAr: 'انهيار سد مأرب (سيل العَرِم)', description: 'The collapse of the Great Dam of Ma\'rib triggered mass migration of Yemeni tribes. Referenced in the Quran (34:16). Source: Quran; al-Tabari.', descriptionAr: 'انهيار سد مأرب أدى إلى هجرة جماعية للقبائل اليمنية. ورد ذكره في القرآن (سبأ: 16). المصدر: القرآن؛ الطبري.', yearCE: 575, eventType: EventType.MIGRATION, location: 'مأرب، اليمن', latitude: 15.43, longitude: 45.33 },
+            { nodeId: azd.id, title: 'Azd Migration Northward', titleAr: 'هجرة الأزد شمالاً', description: 'After the Marib Dam collapse, Azd tribes dispersed: some to Oman, others to Yathrib (Medina), and the Ghassanids to Syria. Source: al-Tabari.', descriptionAr: 'بعد انهيار السد تفرق الأزد: بعضهم إلى عُمان، وآخرون إلى يثرب (المدينة)، والغساسنة إلى الشام. المصدر: الطبري.', yearCE: 580, eventType: EventType.MIGRATION, location: 'من اليمن إلى الشمال', latitude: 19.50, longitude: 43.00 },
+            { nodeId: bakr.id, title: 'Battle of Dhi Qar', titleAr: 'يوم ذي قار', description: 'The first recorded Arab victory over a foreign empire. Banu Bakr ibn Wa\'il defeated the Sassanid Persian army. The Prophet ﷺ said: "This is the first day the Arabs took revenge on the Persians." Source: al-Tabari.', descriptionAr: 'أول انتصار عربي مسجل على إمبراطورية أجنبية. هزم بنو بكر بن وائل الجيش الساساني الفارسي. قال النبي ﷺ: "هذا أول يوم انتصفت فيه العرب من العجم." المصدر: الطبري.', yearCE: 609, eventType: EventType.BATTLE, location: 'ذي قار، العراق', latitude: 31.05, longitude: 46.25 },
+            { nodeId: quraysh.id, title: 'Qusai Unifies Quraysh Authority over Mecca', titleAr: 'توحيد قصي لسلطة قريش على مكة', description: 'Qusai ibn Kilab unified Quraysh custodianship of the Kaaba and established the Dar al-Nadwa (council house). Source: Ibn Hisham.', descriptionAr: 'وحّد قصي بن كلاب سدانة قريش للكعبة وأسس دار الندوة. المصدر: ابن هشام.', yearCE: 480, eventType: EventType.FOUNDING, location: 'مكة المكرمة', latitude: 21.4225, longitude: 39.8262 },
+            { nodeId: hashim.id, title: "Hashim Establishes the Trade Caravans (Ilaf)", titleAr: 'تأسيس هاشم لرحلة الإيلاف', description: 'Hashim ibn Abd Manaf established the Ilaf trade agreements and the winter-summer caravan routes (referenced in Surah Quraysh). Source: Ibn Hisham.', descriptionAr: 'أسس هاشم بن عبد مناف اتفاقيات الإيلاف التجارية ورحلتي الشتاء والصيف (المذكورتين في سورة قريش). المصدر: ابن هشام.', yearCE: 500, eventType: EventType.CULTURAL, location: 'مكة المكرمة', latitude: 21.4225, longitude: 39.8262 },
+            { nodeId: himyar.id, title: 'Rise of the Himyarite Kingdom', titleAr: 'قيام المملكة الحميرية', description: 'Himyar displaced Saba as the dominant power in Yemen, unifying southern Arabia under one kingdom. Source: al-Hamdani.', descriptionAr: 'أزاح حمير سبأ كقوة مهيمنة في اليمن، وموحداً جنوب الجزيرة تحت مملكة واحدة. المصدر: الهمداني.', yearCE: 110, eventType: EventType.FOUNDING, location: 'ظفار، اليمن', latitude: 14.20, longitude: 44.40 },
+            { nodeId: nizar.id, title: 'Nizar Tribal Confederation', titleAr: 'تحالف بني نزار', description: 'Formation of the Nizari confederation controlling central and northern Arabia. Source: Jamharat al-Nasab.', descriptionAr: 'تشكيل تحالف نزار للسيطرة على وسط وشمال الجزيرة العربية. المصدر: جمهرة النسب.', yearCE: 300, eventType: EventType.ALLIANCE, location: 'نجد', latitude: 24.63, longitude: 46.72 },
+            { nodeId: yarub.id, title: 'Founding of the Hadramawt Kingdom', titleAr: 'تأسيس مملكة حضرموت', description: 'The ancient kingdom of Hadramawt was established by descendants of Ya\'rub. Source: inscriptions; al-Hamdani.', descriptionAr: 'تأسيس مملكة حضرموت القديمة من قبل أبناء يعرب. المصدر: النقوش؛ الهمداني.', yearCE: -800, eventType: EventType.FOUNDING, location: 'حضرموت، اليمن', latitude: 15.95, longitude: 48.78 },
+            { nodeId: maad.id, title: 'Hejaz Incense Trade Route', titleAr: 'طريق تجارة البخور في الحجاز', description: 'Ma\'ad tribes controlled the vital incense route connecting Yemen to the Levant via the Hejaz. Source: al-Tabari.', descriptionAr: 'سيطرت قبائل معد على طريق البخور الحيوي الواصل بين اليمن والشام عبر الحجاز. المصدر: الطبري.', yearCE: 200, eventType: EventType.CULTURAL, location: 'الحجاز', latitude: 24.47, longitude: 39.61 },
+            { nodeId: adnan.id, title: 'Pre-Islamic Hajj Pilgrimage', titleAr: 'حج ما قبل الإسلام', description: 'The pre-Islamic Hajj tradition was maintained through the descendants of Adnan in Mecca. Source: Ibn Hisham.', descriptionAr: 'توارث أبناء عدنان تقاليد الحج في مكة المكرمة. المصدر: ابن هشام.', yearCE: -200, eventType: EventType.CULTURAL, location: 'مكة المكرمة', latitude: 21.42, longitude: 39.83 },
+            { nodeId: qahtan.id, title: 'Suq Ukaz Poetry Market', titleAr: 'سوق عكاظ', description: 'The famous pre-Islamic market and poetry festival where tribal poets competed. A major cultural institution of the Arabs. Source: al-Aghani.', descriptionAr: 'السوق الجاهلي الشهير ومهرجان الشعر حيث تنافس شعراء القبائل. مؤسسة ثقافية عربية كبرى. المصدر: الأغاني.', yearCE: 500, eventType: EventType.CULTURAL, location: 'قرب الطائف', latitude: 21.20, longitude: 40.50 },
         ],
     })
-    console.log('✅ Created 10 historical events')
+    console.log('✅ Created 12 historical events')
 
-    // ────────────────────────────────────────────
-    // 4. DEMO USER + SAMPLE NOTIFICATIONS
-    // ────────────────────────────────────────────
+    // ═══════════════════════════════════════════════
+    // DNA MARKERS
+    // Source: FamilyTreeDNA projects; published genetic studies
+    // ═══════════════════════════════════════════════
+    console.log('\n🧬 Creating DNA markers...')
+
+    await prisma.dnaMarker.createMany({
+        data: [
+            { nodeId: quraysh.id, haplogroup: 'J1-FGC8712', type: DnaType.Y_DNA, subClade: 'J1-L859', confidence: 0.85, source: 'FamilyTreeDNA Quraysh Project', studyUrl: 'https://www.familytreedna.com/groups/quraysh', notes: 'FGC8712 and L859 are markers associated with Qurayshi lineages per FTDNA project data.' },
+            { nodeId: hashim.id, haplogroup: 'J1-FGC8703', type: DnaType.Y_DNA, subClade: 'J1-L859 > FGC8703', confidence: 0.80, source: 'FamilyTreeDNA Hashemite Project', studyUrl: 'https://www.familytreedna.com/groups/hashemite', notes: 'FGC8703 subclade identified in Hashemite lineage studies.' },
+            { nodeId: azd.id, haplogroup: 'J1-Z640', type: DnaType.Y_DNA, subClade: 'J1-M267 > Z640', confidence: 0.82, sampleSize: 150, source: 'FamilyTreeDNA Azd Tribe Project', studyUrl: 'https://www.familytreedna.com/groups/azd-tribe', notes: 'The majority of Azd branches carry J1-Z640 across Saudi Arabia, Yemen, UAE, and Oman.' },
+            { nodeId: adnan.id, haplogroup: 'J1-M267', type: DnaType.Y_DNA, subClade: 'J1-P58', confidence: 0.75, source: 'Multiple genetic studies', studyUrl: 'https://www.familytreedna.com/groups/j1-m267', notes: 'J1-M267 is the predominant haplogroup among Arabian Peninsula populations. Most Adnanite tribes fall under J1-P58 downstream subclades.' },
+            { nodeId: qahtan.id, haplogroup: 'J1-M267', type: DnaType.Y_DNA, subClade: 'J1-P58 > L222.2', confidence: 0.70, source: 'Genetic studies on Yemeni populations', notes: 'Qahtanite tribes show high frequency of J1, with Yemen reaching ~72% J1 frequency.' },
+            { nodeId: kinanah.id, haplogroup: 'J1-FGC8712', type: DnaType.Y_DNA, subClade: 'J1-M267 > P58 > FGC8712', confidence: 0.78, source: 'FamilyTreeDNA Arabian DNA Project', notes: 'Kinanah lineages cluster under FGC8712, consistent with the Quraysh subclade.' },
+        ],
+    })
+    console.log('✅ Created 6 DNA markers')
+
+    // ═══════════════════════════════════════════════
+    // DEMO USER + NOTIFICATIONS
+    // ═══════════════════════════════════════════════
     console.log('\n👤 Creating demo user and notifications...')
 
-    // Upsert a demo user for notifications
     const demoUser = await prisma.user.upsert({
         where: { email: 'demo@arabtree.com' },
         update: {},
@@ -327,66 +382,16 @@ async function main() {
 
     await prisma.notification.createMany({
         data: [
-            {
-                userId: demoUser.id,
-                type: NotificationType.CONTRIBUTION_APPROVED,
-                title: 'Contribution Approved',
-                titleAr: 'تمت الموافقة على مساهمتك',
-                message: 'Your contribution about the Mudar tribe has been approved.',
-                messageAr: 'تمت الموافقة على مساهمتك حول قبيلة مضر.',
-                link: '/contribute',
-                read: false,
-            },
-            {
-                userId: demoUser.id,
-                type: NotificationType.CONTRIBUTION_REJECTED,
-                title: 'Contribution Rejected',
-                titleAr: 'تم رفض مساهمتك',
-                message: 'More sources needed for the claimed lineage connection.',
-                messageAr: 'يلزم تقديم مصادر إضافية لإثبات صلة النسب المذكورة.',
-                link: '/contribute',
-                read: false,
-            },
-            {
-                userId: demoUser.id,
-                type: NotificationType.CONTRIBUTION_PENDING,
-                title: 'New contribution awaiting review',
-                titleAr: 'مساهمة جديدة بانتظار المراجعة',
-                message: 'A new node addition for Banu Tamim.',
-                messageAr: 'إضافة عقدة جديدة لبني تميم.',
-                link: '/verify',
-                read: false,
-            },
-            {
-                userId: demoUser.id,
-                type: NotificationType.ROLE_CHANGED,
-                title: 'Your role has been updated to CONTRIBUTOR',
-                titleAr: 'تم تحديث صلاحيتك إلى مساهم',
-                read: true,
-            },
-            {
-                userId: demoUser.id,
-                type: NotificationType.SYSTEM_ANNOUNCEMENT,
-                title: 'Historical Maps feature is now live!',
-                titleAr: 'ميزة الخريطة التاريخية متاحة الآن!',
-                message: 'Explore tribal territories and historical events on the new map.',
-                messageAr: 'استكشف مواقع القبائل والأحداث التاريخية على الخريطة الجديدة.',
-                link: '/map',
-                read: false,
-            },
+            { userId: demoUser.id, type: NotificationType.CONTRIBUTION_APPROVED, title: 'Contribution Approved', titleAr: 'تمت الموافقة على مساهمتك', message: 'Your contribution about the Mudar tribe has been approved.', messageAr: 'تمت الموافقة على مساهمتك حول قبيلة مضر.', link: '/contribute', read: false },
+            { userId: demoUser.id, type: NotificationType.CONTRIBUTION_PENDING, title: 'New contribution awaiting review', titleAr: 'مساهمة جديدة بانتظار المراجعة', message: 'A new node addition for Banu Tamim.', messageAr: 'إضافة عقدة جديدة لبني تميم.', link: '/verify', read: false },
+            { userId: demoUser.id, type: NotificationType.SYSTEM_ANNOUNCEMENT, title: 'Historical Maps feature is now live!', titleAr: 'ميزة الخريطة التاريخية متاحة الآن!', message: 'Explore tribal territories and historical events on the new map.', messageAr: 'استكشف مواقع القبائل والأحداث التاريخية على الخريطة الجديدة.', link: '/map', read: false },
         ],
     })
-    console.log('✅ Created demo user and 5 sample notifications')
+    console.log('✅ Created demo user and 3 sample notifications')
 
     console.log('\n🎉 Seed completed successfully!')
 }
 
 main()
-    .then(async () => {
-        await prisma.$disconnect()
-    })
-    .catch(async (e) => {
-        console.error(e)
-        await prisma.$disconnect()
-        process.exit(1)
-    })
+    .then(async () => { await prisma.$disconnect() })
+    .catch(async (e) => { console.error(e); await prisma.$disconnect(); process.exit(1) })

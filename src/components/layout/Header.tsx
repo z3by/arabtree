@@ -5,7 +5,7 @@ import Link from "next/link"
 import { useTheme } from "next-themes"
 import { useSession, signIn, signOut } from "next-auth/react"
 import { Button } from "@/components/ui/button"
-import { Moon, Sun, LogOut, Menu } from "lucide-react"
+import { Moon, Sun, LogOut, Menu, Trophy } from "lucide-react"
 import NotificationBell from "@/components/layout/NotificationBell"
 
 export function Header() {
@@ -40,6 +40,10 @@ export function Header() {
                     <Link href="/map" className="text-sm font-medium hover:text-primary transition-colors">
                         الخريطة
                     </Link>
+                    <Link href="/leaderboard" className="text-sm font-medium hover:text-primary transition-colors flex items-center gap-1">
+                        <Trophy className="w-3.5 h-3.5" />
+                        المتصدرون
+                    </Link>
                 </nav>
 
                 <div className="flex items-center gap-2">
@@ -57,9 +61,9 @@ export function Header() {
                     {session ? (
                         <div className="flex items-center gap-2">
                             <NotificationBell />
-                            <span className="text-sm hidden lg:inline-block text-muted-foreground mr-2">
+                            <Link href="/profile" className="text-sm hidden lg:inline-block text-muted-foreground mr-2 hover:text-primary transition-colors">
                                 {session.user?.name}
-                            </span>
+                            </Link>
                             <Button variant="ghost" size="icon" onClick={() => signOut()} title="تسجيل خروج">
                                 <LogOut className="h-4 w-4" />
                             </Button>
@@ -89,6 +93,10 @@ export function Header() {
                         </Link>
                         <Link href="/map" className="flex items-center p-2 rounded-md hover:bg-muted" onClick={() => setIsMenuOpen(false)}>
                             الخريطة
+                        </Link>
+                        <Link href="/leaderboard" className="flex items-center gap-2 p-2 rounded-md hover:bg-muted" onClick={() => setIsMenuOpen(false)}>
+                            <Trophy className="w-4 h-4" />
+                            المتصدرون
                         </Link>
                     </nav>
                 </div>
