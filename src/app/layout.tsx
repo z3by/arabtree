@@ -1,16 +1,8 @@
 import type { Metadata } from "next";
-import { Noto_Kufi_Arabic } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import SessionProvider from "@/components/providers/SessionProvider";
 import { Toaster } from "@/components/ui/sonner";
-
-const notoKufi = Noto_Kufi_Arabic({
-  subsets: ["arabic"],
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-  variable: "--font-noto-kufi",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "ArabTree | شجرة الأنساب",
@@ -24,7 +16,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ar" dir="rtl" suppressHydrationWarning>
-      <body className={`${notoKufi.variable} font-sans antialiased bg-background text-foreground`}>
+      <head>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;600;700&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body className="font-sans antialiased bg-background text-foreground" style={{ fontFamily: "'Noto Kufi Arabic', system-ui, arial" }}>
         <SessionProvider>
           <ThemeProvider
             attribute="class"
