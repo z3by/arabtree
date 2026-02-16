@@ -171,7 +171,7 @@ function LineageTreeInner() {
                         target: node.id,
                         type: 'smoothstep',
                         animated: true,
-                        style: { stroke: '#94a3b8' },
+                        style: { stroke: 'hsl(142, 60%, 40%)', strokeWidth: 2 },
                     }))
 
                 // Store full data in refs
@@ -233,7 +233,22 @@ function LineageTreeInner() {
     }, [nodes, edges, setNodes, setEdges, fitView])
 
     return (
-        <div className="h-[80vh] w-full border rounded-lg bg-slate-50 dark:bg-slate-950 shadow-inner relative group">
+        <div className="h-[80vh] w-full border rounded-xl bg-slate-50 dark:bg-slate-950 shadow-inner relative group overflow-hidden">
+            {/* Loading skeleton */}
+            {loading && (
+                <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-background/80 backdrop-blur-sm">
+                    <div className="flex flex-col items-center gap-4 animate-fade-in-up">
+                        <span className="text-5xl animate-sway">🌴</span>
+                        <div className="space-y-3 w-48">
+                            <div className="h-2 bg-primary/20 rounded-full animate-shimmer" />
+                            <div className="h-2 bg-primary/10 rounded-full animate-shimmer stagger-1 w-3/4 mx-auto" />
+                            <div className="h-2 bg-primary/10 rounded-full animate-shimmer stagger-2 w-1/2 mx-auto" />
+                        </div>
+                        <p className="text-sm text-muted-foreground mt-2">جاري تحميل الشجرة...</p>
+                    </div>
+                </div>
+            )}
+
             <ReactFlow
                 nodes={nodes}
                 edges={edges}
@@ -244,11 +259,11 @@ function LineageTreeInner() {
                 fitView
                 className="bg-slate-50 dark:bg-slate-950"
             >
-                <Controls />
-                <Background gap={12} size={1} />
+                <Controls className="!bg-background/80 !backdrop-blur-sm !border-border/50 !rounded-lg !shadow-md" />
+                <Background gap={16} size={1} color="hsl(142, 20%, 85%)" />
                 <Panel position="top-right">
-                    <Button onClick={onLayout} variant="secondary" size="sm" disabled={loading}>
-                        {loading ? 'Processing...' : 'Reset Layout'}
+                    <Button onClick={onLayout} variant="secondary" size="sm" disabled={loading} className="rounded-lg shadow-sm">
+                        {loading ? 'جاري التحميل...' : 'إعادة ترتيب'}
                     </Button>
                 </Panel>
             </ReactFlow>

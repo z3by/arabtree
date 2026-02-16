@@ -19,27 +19,36 @@ interface NodeData {
     onToggle?: (nodeId: string) => void
 }
 
+const typeColors: Record<string, { badge: string; ring: string }> = {
+    ROOT: { badge: 'bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900/40 dark:text-amber-300 dark:border-amber-700', ring: 'ring-amber-400/50' },
+    TRIBE: { badge: 'bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-300 dark:border-emerald-700', ring: 'ring-emerald-400/50' },
+    CLAN: { badge: 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/40 dark:text-blue-300 dark:border-blue-700', ring: 'ring-blue-400/50' },
+    FAMILY: { badge: 'bg-purple-100 text-purple-800 border-purple-200 dark:bg-purple-900/40 dark:text-purple-300 dark:border-purple-700', ring: 'ring-purple-400/50' },
+    INDIVIDUAL: { badge: 'bg-rose-100 text-rose-800 border-rose-200 dark:bg-rose-900/40 dark:text-rose-300 dark:border-rose-700', ring: 'ring-rose-400/50' },
+}
+
 const NodeCard = ({ id, data }: { id: string; data: NodeData }) => {
     const nodeId = data.id || id
     const hasChildren = data.childCount && data.childCount > 0
+    const colors = typeColors[data.type] || { badge: 'bg-primary/5 border-primary/20 text-primary', ring: 'ring-primary/50' }
 
     return (
-        <div className="relative group">
-            <Handle type="target" position={Position.Top} className="!bg-muted-foreground w-3 h-3" />
+        <div className="relative group animate-grow-tree">
+            <Handle type="target" position={Position.Top} className="!bg-primary/60 w-3 h-3 !border-2 !border-background" />
 
-            <Card className={`w-[200px] glass-card border-none hover:shadow-lg hover:scale-105 transition-all duration-300 ${data.expanded && hasChildren ? 'ring-2 ring-primary/50' : ''}`}>
-                {/* Info link to detail page */}
+            <Card className={`w-[210px] glass-card border-none hover:shadow-xl hover:scale-105 transition-all duration-300 ${data.expanded && hasChildren ? `ring-2 ${colors.ring}` : ''}`}>
+                {/* Info link */}
                 <Link
                     href={`/tree/${nodeId}`}
                     onClick={(e) => e.stopPropagation()}
-                    className="absolute top-2 left-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-full hover:bg-primary/10 text-muted-foreground hover:text-primary"
+                    className="absolute top-2 left-2 z-10 opacity-0 group-hover:opacity-100 transition-all p-1.5 rounded-full hover:bg-primary/10 text-muted-foreground hover:text-primary scale-75 group-hover:scale-100"
                     title="تفاصيل"
                 >
                     <Info className="w-4 h-4" />
                 </Link>
 
                 <CardHeader className="p-3 pb-2 text-center space-y-1">
-                    <Badge variant="outline" className="w-fit mx-auto text-[10px] px-2 py-0 h-5 mb-1 bg-primary/5 border-primary/20 text-primary">
+                    <Badge variant="outline" className={`w-fit mx-auto text-[10px] px-2 py-0 h-5 mb-1 ${colors.badge}`}>
                         {data.type}
                     </Badge>
                     <CardTitle className="text-lg font-bold leading-none">{data.nameAr}</CardTitle>
@@ -53,10 +62,10 @@ const NodeCard = ({ id, data }: { id: string; data: NodeData }) => {
                 <CardContent className="p-3 pt-0 text-center text-xs text-muted-foreground">
                     {data.birthYear ? (
                         <span className="inline-block bg-muted/50 px-2 py-0.5 rounded-full">
-                            {data.birthYear} - {data.deathYear || 'Present'}
+                            {data.birthYear} - {data.deathYear || 'الحاضر'}
                         </span>
                     ) : (
-                        <span className="opacity-50">Unknown Era</span>
+                        <span className="opacity-50">حقبة غير معروفة</span>
                     )}
 
                     {hasChildren ? (
@@ -67,18 +76,18 @@ const NodeCard = ({ id, data }: { id: string; data: NodeData }) => {
                             }}
                             className="mt-2 w-full flex items-center justify-center gap-1 text-primary cursor-pointer hover:font-bold transition-all p-1.5 hover:bg-primary/10 rounded-md group/toggle"
                         >
-                            <span className="text-[10px]">{data.childCount} descendants</span>
+                            <span className="text-[10px]">{data.childCount} فرع</span>
                             {data.expanded ? (
                                 <ChevronDown className="w-3.5 h-3.5 transition-transform group-hover/toggle:translate-y-0.5" />
                             ) : (
-                                <ChevronRight className="w-3.5 h-3.5 transition-transform group-hover/toggle:translate-x-0.5" />
+                                <ChevronRight className="w-3.5 h-3.5 transition-transform group-hover/toggle:-translate-x-0.5" />
                             )}
                         </button>
                     ) : null}
                 </CardContent>
             </Card>
 
-            <Handle type="source" position={Position.Bottom} className="!bg-muted-foreground w-3 h-3" />
+            <Handle type="source" position={Position.Bottom} className="!bg-primary/60 w-3 h-3 !border-2 !border-background" />
         </div>
     )
 }
