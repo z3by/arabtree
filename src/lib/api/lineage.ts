@@ -23,10 +23,30 @@ export async function getLineageNodes(params: {
     if (params.limit) searchParams.append('limit', params.limit.toString())
     if (params.skip) searchParams.append('skip', params.skip.toString())
 
-    const response = await fetch(`/api/lineage?${searchParams.toString()}`)
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 15000)
+
+    let response: Response
+    try {
+        response = await fetch(`/api/lineage?${searchParams.toString()}`, {
+            signal: controller.signal,
+        })
+    } catch (err) {
+        clearTimeout(timeout)
+        if (err instanceof DOMException && err.name === 'AbortError') {
+            throw new Error('Request timed out — the server took too long to respond')
+        }
+        throw err
+    }
+    clearTimeout(timeout)
 
     if (!response.ok) {
-        throw new Error('Failed to fetch lineage nodes')
+        const body = await response.json().catch(() => ({}))
+        throw new Error(
+            body.type
+                ? `Failed to fetch lineage nodes (${response.status}: ${body.type})`
+                : `Failed to fetch lineage nodes (${response.status})`
+        )
     }
 
     return response.json()

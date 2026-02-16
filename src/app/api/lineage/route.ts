@@ -11,14 +11,16 @@ export async function GET(request: NextRequest) {
     const rootOnly = searchParams.get('root') === 'true'
     const parentId = searchParams.get('parentId')
     const all = searchParams.get('all') === 'true'
-    const limit = parseInt(searchParams.get('limit') || '500')
+    let limit = parseInt(searchParams.get('limit') || '500')
     const skip = parseInt(searchParams.get('skip') || '0')
 
     try {
         const where: Prisma.LineageNodeWhereInput = {}
 
         if (all) {
-            // No filter — fetch all nodes for full tree view
+            // Fetch all nodes for full tree view — but still cap it at a reasonable large number to avoid memory issues
+            // Unless the user explicitly asks for more.
+            limit = parseInt(searchParams.get('limit') || '2000')
         } else if (rootOnly) {
             where.type = 'ROOT'
         } else if (parentId) {
@@ -47,8 +49,31 @@ export async function GET(request: NextRequest) {
         })
     } catch (error) {
         console.error('Error fetching lineage nodes:', error)
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+        const errorType = error instanceof Error ? error.constructor.name : typeof error
+        // Ensure Sentry captures this error with context
+        const Sentry = require('@sentry/nextjs')
+        Sentry.captureException(error, {
+            tags: {
+                api: 'lineage',
+                method: 'GET',
+                errorType,
+            },
+            extra: {
+                rootOnly,
+                parentId,
+                all,
+                limit,
+                skip,
+                errorMessage,
+            }
+        })
         return NextResponse.json(
-            { error: 'Failed to fetch lineage nodes' },
+            {
+                error: 'Failed to fetch lineage nodes',
+                type: errorType,
+                detail: process.env.NODE_ENV === 'development' ? errorMessage : undefined,
+            },
             { status: 500 }
         )
     }

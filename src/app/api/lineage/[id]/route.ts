@@ -71,6 +71,11 @@ export async function GET(
         })
     } catch (error) {
         console.error('Error fetching lineage node:', error)
+        const Sentry = require('@sentry/nextjs')
+        Sentry.captureException(error, {
+            tags: { api: 'lineage-detail', method: 'GET' },
+            extra: { id, subtreeDepth }
+        })
         return NextResponse.json(
             { error: 'Failed to fetch lineage node' },
             { status: 500 }
@@ -136,6 +141,11 @@ export async function PUT(
             return NextResponse.json({ error: error.issues }, { status: 400 })
         }
         console.error('Error updating lineage node:', error)
+        const Sentry = require('@sentry/nextjs')
+        Sentry.captureException(error, {
+            tags: { api: 'lineage-detail', method: 'PUT' },
+            extra: { id }
+        })
         return NextResponse.json(
             { error: 'Failed to update lineage node' },
             { status: 500 }
@@ -223,6 +233,11 @@ export async function DELETE(
         return NextResponse.json({ message: 'Node archived successfully' })
     } catch (error) {
         console.error('Error archiving lineage node:', error)
+        const Sentry = require('@sentry/nextjs')
+        Sentry.captureException(error, {
+            tags: { api: 'lineage-detail', method: 'DELETE' },
+            extra: { id }
+        })
         return NextResponse.json(
             { error: 'Failed to archive lineage node' },
             { status: 500 }

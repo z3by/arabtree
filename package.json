@@ -20,6 +20,7 @@
     "@radix-ui/react-label": "^2.1.8",
     "@radix-ui/react-select": "^2.2.6",
     "@radix-ui/react-slot": "^1.2.4",
+    "@sentry/nextjs": "^10.39.0",
     "@types/dagre": "^0.7.53",
     "@types/leaflet": "^1.9.21",
     "bcryptjs": "^3.0.3",
