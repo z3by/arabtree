@@ -322,6 +322,39 @@ async function main() {
         },
     })
 
+    const abdShams = await prisma.lineageNode.create({
+        data: {
+            name: 'Banu Abd Shams', nameAr: 'بنو عبد شمس', type: NodeType.CLAN, status: NodeStatus.PUBLISHED,
+            generationDepth: 15, parentId: abdManaf.id, childCount: 1,
+            biography: 'A powerful clan of Quraysh, rivals of Banu Hashim. Progenitors of the Umayyads. Source: Ibn Hisham.',
+            biographyAr: 'بطن قوي من قريش، ومنافس لبني هاشم. منهم الأمويون. المصدر: ابن هشام.',
+            birthPlace: 'مكة المكرمة', era: 'ما قبل الإسلام',
+            latitude: 21.4225, longitude: 39.8262,
+        },
+    })
+
+    const sahm = await prisma.lineageNode.create({
+        data: {
+            name: 'Banu Sahm', nameAr: 'بنو سهم', type: NodeType.CLAN, status: NodeStatus.PUBLISHED,
+            generationDepth: 12, parentId: kab.id, childCount: 1,
+            biography: 'Clan responsible for arbitration (Hukumah) and custodianship of the Kaaba\'s treasures. Included Amr ibn al-Aas. Source: Ibn Hisham.',
+            biographyAr: 'بطن تولى الحكومة وحفظ أموال الكعبة. منهم عمرو بن العاص. المصدر: ابن هشام.',
+            birthPlace: 'مكة المكرمة', era: 'ما قبل الإسلام',
+            latitude: 21.4225, longitude: 39.8262,
+        },
+    })
+
+    const jumah = await prisma.lineageNode.create({
+        data: {
+            name: 'Banu Jumah', nameAr: 'بنو جمح', type: NodeType.CLAN, status: NodeStatus.PUBLISHED,
+            generationDepth: 12, parentId: kab.id, childCount: 1,
+            biography: 'Clan responsible for divination (Azlam). Umayyah ibn Khalaf was their chief. Source: Ibn Hisham.',
+            biographyAr: 'بطن تولى الاستقسام بالأزلام. سيدهم أمية بن خلف. المصدر: ابن هشام.',
+            birthPlace: 'مكة المكرمة', era: 'ما قبل الإسلام',
+            latitude: 21.4225, longitude: 39.8262,
+        },
+    })
+
     // ── Individual prominent figures ──
 
     await prisma.lineageNode.createMany({
@@ -597,6 +630,74 @@ async function main() {
     })
 
     // ═══════════════════════════════════════════════
+    // DETAILED SUBTRIBES EXPANSION
+    // ═══════════════════════════════════════════════
+
+    console.log('🌱 Expanding subtribes...')
+
+    // ── Tamim Branches ──
+    const tamimNode = await prisma.lineageNode.findFirst({ where: { name: 'Tamim' } });
+    if (tamimNode) {
+        const hanzala = await prisma.lineageNode.create({
+            data: { name: 'Banu Hanzala', nameAr: 'بنو حنظلة', type: NodeType.CLAN, status: NodeStatus.PUBLISHED, generationDepth: 6, parentId: tamimNode.id, childCount: 2, biography: 'A major branch of Tamim. Home to the sub-clans of Darim and Yarbu. Source: Ibn al-Kalbi.', biographyAr: 'فرع رئيسي من تميم. يضم بطون دارم ويربوع. المصدر: ابن الكلبي.', birthPlace: 'اليمامة', era: 'ما قبل الإسلام' }
+        });
+
+        await prisma.lineageNode.createMany({
+            data: [
+                { name: 'Banu Darim', nameAr: 'بنو دارم', type: NodeType.FAMILY, status: NodeStatus.PUBLISHED, generationDepth: 7, parentId: hanzala.id, childCount: 0, biography: 'Aristocratic clan of Tamim known for their nobility. Source: Jamharat al-Nasab.', biographyAr: 'بيت الشرف في تميم، عُرفوا بالنبل والسيادة. المصدر: جمهرة النسب.', birthPlace: 'نجد', era: 'ما قبل الإسلام' },
+                { name: 'Banu Yarbu', nameAr: 'بنو يربوع', type: NodeType.FAMILY, status: NodeStatus.PUBLISHED, generationDepth: 7, parentId: hanzala.id, childCount: 0, biography: 'Warrior clan of Tamim. Famous for their cavalry and poets. Source: al-Aghani.', biographyAr: 'فرسان تميم وشعراؤهم. اشتهروا بالخيل والشجاعة. المصدر: الأغاني.', birthPlace: 'نجد', era: 'ما قبل الإسلام' }
+            ]
+        });
+    }
+
+    // ── Azd Branches ──
+    if (azd) {
+        await prisma.lineageNode.createMany({
+            data: [
+                { name: 'Ghamid', nameAr: 'غامد', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED, generationDepth: 6, parentId: azd.id, childCount: 0, biography: 'An Azdite tribe settled in the Sarawat Mountains. Source: al-Hamdani.', biographyAr: 'قبيلة أزدية استقرت في جبال السروات. المصدر: الهمداني.', birthPlace: 'الباحة', era: 'ما قبل الإسلام', latitude: 19.9, longitude: 41.5 },
+                { name: 'Zahran', nameAr: 'زهران', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED, generationDepth: 6, parentId: azd.id, childCount: 0, biography: 'Brother tribe to Ghamid, also in the Sarawat. Daws was a branch of Zahran (tribe of Abu Hurayrah). Source: al-Hamdani.', biographyAr: 'شقيق غامد في السروات. منها دوس (قبيلة أبي هريرة). المصدر: الهمداني.', birthPlace: 'الباحة', era: 'ما قبل الإسلام', latitude: 20.0, longitude: 41.3 },
+                { name: 'Bariq', nameAr: 'بارق', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED, generationDepth: 6, parentId: azd.id, childCount: 0, biography: 'Azdite tribe in Asir. Known for their early conversion to Islam. Source: Ibn Sa\'d.', biographyAr: 'قبيلة أزدية في عسير. عُرفوا بإسلامهم المبكر. المصدر: ابن سعد.', birthPlace: 'عسير', era: 'ما قبل الإسلام', latitude: 18.9, longitude: 41.9 },
+                { name: 'Banu Daws', nameAr: 'دوس', type: NodeType.CLAN, status: NodeStatus.PUBLISHED, generationDepth: 7, parentId: azd.id, childCount: 0, biography: 'A branch of Zahran. The tribe of Abu Hurayrah. Source: Ibn Hisham.', biographyAr: 'فرع من زهران. قبيلة أبي هريرة. المصدر: ابن هشام.', birthPlace: 'الباحة', era: 'ما قبل الإسلام', latitude: 20.1, longitude: 41.2 }
+            ]
+        });
+    }
+
+    // ── Madhhij Branches ──
+    if (madhhijId) {
+        await prisma.lineageNode.createMany({
+            data: [
+                { name: 'Banu Murad', nameAr: 'مراد', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED, generationDepth: 6, parentId: madhhijId, childCount: 0, biography: 'A warrior tribe of Madhhij. Famous for their rebellion and later role in conquests. Source: al-Tabari.', biographyAr: 'قبيلة محاربة من مذحج. اشتهرت بفروسيتها ودورها في الفتوحات. المصدر: الطبري.', birthPlace: 'اليمن', era: 'ما قبل الإسلام', latitude: 15.5, longitude: 45.8 },
+                { name: 'Banu Zubayd', nameAr: 'زبيد', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED, generationDepth: 6, parentId: madhhijId, childCount: 0, biography: 'Famous Madhhij clan, home of the knight Amr ibn Ma\'adi Yakrib. Source: al-Aghani.', biographyAr: 'قبيلة مذحجية، منها الفارس عمرو بن معد يكرب. المصدر: الأغاني.', birthPlace: 'اليمن', era: 'ما قبل الإسلام', latitude: 14.5, longitude: 44.8 }
+            ]
+        });
+    }
+
+    // ── Himyar Branches ──
+    if (himyar) {
+        await prisma.lineageNode.createMany({
+            data: [
+                { name: 'Yafi', nameAr: 'يافع', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED, generationDepth: 5, parentId: himyar.id, childCount: 0, biography: 'A major Himyarite tribe in the southern highlands. Known for their distinct identity and dialect. Source: al-Hamdani.', biographyAr: 'قبيلة حميرية كبرى في المرتفعات الجنوبية. عُرفت بلهجتها وهويتها المميزة. المصدر: الهمداني.', birthPlace: 'يافع، اليمن', era: 'ما قبل الإسلام', latitude: 13.9, longitude: 45.2 }
+            ]
+        });
+    }
+
+    // ── Notable Figures Expansion ──
+    const absNode = await prisma.lineageNode.findFirst({ where: { name: "'Abs" } });
+    const kindaNode = await prisma.lineageNode.findFirst({ where: { name: 'Kindah' } });
+    const tayyNode = await prisma.lineageNode.findFirst({ where: { name: "Tayy'" } });
+    const dawsNode = await prisma.lineageNode.findFirst({ where: { name: 'Banu Daws' } });
+
+    await prisma.lineageNode.createMany({
+        data: [
+            ...(absNode ? [{ name: 'Antarah ibn Shaddad', nameAr: 'عنترة بن شداد', type: NodeType.INDIVIDUAL, status: NodeStatus.PUBLISHED, generationDepth: 7, parentId: absNode.id, childCount: 0, title: 'الفارس الشاعر', biography: 'Pre-Islamic warrior and poet. Author of one of the Mu\'allaqat. Famous for his chivalry and love for Abla. Source: al-Aghani.', biographyAr: 'فارس وشاعر جاهلي. صاحب إحدى المعلقات. اشتهر بفروسيته وحبه لعبلة. المصدر: الأغاني.', birthPlace: 'نجد', era: 'ما قبل الإسلام', birthYear: 525, deathYear: 608 }] : []),
+            ...(kindaNode ? [{ name: "Imru' al-Qais", nameAr: 'امرؤ القيس', type: NodeType.INDIVIDUAL, status: NodeStatus.PUBLISHED, generationDepth: 6, parentId: kindaNode.id, childCount: 0, title: 'الملك الضليل', biography: 'The most renowned pre-Islamic poet. Son of the last King of Kinda. Author of the most famous Mu\'allaqa. Source: al-Aghani.', biographyAr: 'أشهر شعراء الجاهلية. ابن آخر ملوك كندة. صاحب المعلقة الشهيرة. المصدر: الأغاني.', birthPlace: 'نجد', era: 'ما قبل الإسلام', birthYear: 501, deathYear: 544 }] : []),
+            ...(tayyNode ? [{ name: "Hatim al-Ta'i", nameAr: 'حاتم الطائي', type: NodeType.INDIVIDUAL, status: NodeStatus.PUBLISHED, generationDepth: 6, parentId: tayyNode.id, childCount: 0, title: 'أجود العرب', biography: 'Legendary figure of generosity in Arab tradition. His son Adi became a companion of the Prophet. Source: al-Aghani.', biographyAr: 'مضرب المثل في الجود والكرم عند العرب. ابنه عدي صار صحابياً. المصدر: الأغاني.', birthPlace: 'حائل', era: 'ما قبل الإسلام', deathYear: 578 }] : []),
+             ...(dawsNode ? [{ name: "Abu Hurayrah", nameAr: 'أبو هريرة', type: NodeType.INDIVIDUAL, status: NodeStatus.PUBLISHED, generationDepth: 8, parentId: dawsNode.id, childCount: 0, title: 'راوية الإسلام', biography: 'The most prolific narrator of Hadith. Embraced Islam in the year of Khaybar. Source: Sahih al-Bukhari.', biographyAr: 'أكثر الصحابة رواية للحديث. أسلم عام خيبر. المصدر: صحيح البخاري.', birthPlace: 'الباحة', era: 'صدر الإسلام', birthYear: 603, deathYear: 681 }] : []),
+        ]
+    });
+
+
+    // ═══════════════════════════════════════════════
     // LEVANT & MODERN TRIBES (Syria, Jordan, etc.)
     // ═══════════════════════════════════════════════
 
@@ -647,6 +748,7 @@ async function main() {
 
     const khuzaa = await prisma.lineageNode.findFirst({ where: { name: "Khuza'a" } });
     const abs = await prisma.lineageNode.findFirst({ where: { name: "'Abs" } });
+    const ghassan = await prisma.lineageNode.findFirst({ where: { name: 'Ghassan' } });
 
     const umayyaId = await prisma.lineageNode.findFirst({ where: { name: 'Banu Umayya' } }).then(n => n?.id);
 
@@ -670,9 +772,13 @@ async function main() {
             { nodeId: abdAlMuttalib.id, title: 'Year of the Elephant', titleAr: 'عام الفيل', description: 'Abraha\'s army attempted to destroy the Kaaba but was defeated by birds sent by Allah. The Prophet Muhammad ﷺ was born this year. Source: Quran, Ibn Hisham.', descriptionAr: 'حاول جيش أبرهة هدم الكعبة ولكن هُزم بطيور أبابيل. وُلد النبي محمد ﷺ في هذا العام. المصدر: القرآن الكريم، ابن هشام.', yearCE: 570, eventType: EventType.BATTLE, location: 'مكة المكرمة', latitude: 21.4225, longitude: 39.8262 },
             { nodeId: ibrahim.id, title: 'Construction of the Kaaba', titleAr: 'بناء الكعبة المشرفة', description: 'Ibrahim and his son Isma\'il raised the foundations of the Kaaba in Mecca. Source: Quran.', descriptionAr: 'رفع إبراهيم وابنه إسماعيل قواعد الكعبة في مكة. المصدر: القرآن الكريم.', yearCE: -2000, eventType: EventType.FOUNDING, location: 'مكة المكرمة', latitude: 21.4225, longitude: 39.8262 },
             { nodeId: quraysh.id, title: 'Fijar Wars', titleAr: 'حرب الفجار', description: 'A series of conflicts between Quraysh/Kinanah and Hawazin. The Prophet ﷺ participated in them during his youth. Source: Ibn Hisham.', descriptionAr: 'سلسلة من المعارك بين قريش/كنانة وهوازن. شارك فيها النبي ﷺ في شبابه. المصدر: ابن هشام.', yearCE: 590, eventType: EventType.BATTLE, location: 'مكة المكرمة', latitude: 21.4225, longitude: 39.8262 },
+            { nodeId: quraysh.id, title: 'Battle of Yarmouk', titleAr: 'معركة اليرموك', description: 'A major battle between the Muslim Arab forces and the Byzantine Empire. It ended Byzantine rule in Syria. Khalid ibn al-Walid was the commander. Source: al-Tabari.', descriptionAr: 'معركة كبرى بين المسلمين والروم. أنهت الحكم البيزنطي في الشام. كان خالد بن الوليد القائد. المصدر: الطبري.', yearCE: 636, eventType: EventType.BATTLE, location: 'نهر اليرموك', latitude: 32.81, longitude: 35.95 },
+            { nodeId: quraysh.id, title: 'Conquest of Mecca', titleAr: 'فتح مكة', description: 'The Prophet Muhammad ﷺ and his followers entered Mecca peacefully, ending Quraysh opposition and cleansing the Kaaba of idols. Source: Ibn Hisham.', descriptionAr: 'دخل النبي محمد ﷺ وأصحابه مكة بسلام، منهين معارضة قريش ومطهرين الكعبة من الأصنام. المصدر: ابن هشام.', yearCE: 630, eventType: EventType.BATTLE, location: 'مكة المكرمة', latitude: 21.4225, longitude: 39.8262 },
+            ...(bakr ? [{ nodeId: bakr.id, title: 'Battle of al-Qadisiyyah', titleAr: 'معركة القادسية', description: 'Decisive battle between the Arab Muslim army and the Sassanid Persian Empire. Resulted in the conquest of Iraq. Source: al-Tabari.', descriptionAr: 'معركة حاسمة بين المسلمين والفرس. أدت إلى فتح العراق. المصدر: الطبري.', yearCE: 636, eventType: EventType.BATTLE, location: 'القادسية، العراق', latitude: 31.55, longitude: 44.55 }] : []),
+            ...(ghassan ? [{ nodeId: ghassan.id, title: "Battle of Mu'tah", titleAr: 'غزوة مؤتة', description: 'First military engagement between Muslim Arabs and the Byzantine Empire (and their Ghassanid vassals). Source: Ibn Hisham.', descriptionAr: 'أول مواجهة عسكرية بين العرب المسلمين والإمبراطورية البيزنطية (وحلفائهم الغساسنة). المصدر: ابن هشام.', yearCE: 629, eventType: EventType.BATTLE, location: 'مؤتة، الأردن', latitude: 31.06, longitude: 35.70 }] : []),
         ],
     })
-    console.log('✅ Created 15 historical events')
+    console.log('✅ Created historical events')
 
     // ═══════════════════════════════════════════════
     // DNA MARKERS
@@ -681,11 +787,19 @@ async function main() {
     console.log('\n🧬 Creating DNA markers...')
 
     const hawazinId = await prisma.lineageNode.findFirst({ where: { name: 'Hawazin' } }).then(n => n?.id);
+    const tamimMarkerNode = await prisma.lineageNode.findFirst({ where: { name: 'Tamim' } });
+    const kindaMarkerNode = await prisma.lineageNode.findFirst({ where: { name: 'Kindah' } });
+    const anazahMarkerNode = await prisma.lineageNode.findFirst({ where: { name: "'Anazah" } });
+    const shammarMarkerNode = await prisma.lineageNode.findFirst({ where: { name: 'Shammar' } });
 
     await prisma.dnaMarker.createMany({
         data: [
             { nodeId: quraysh.id, haplogroup: 'J1-FGC8712', type: DnaType.Y_DNA, subClade: 'J1-L859', confidence: 0.85, source: 'FamilyTreeDNA Quraysh Project', studyUrl: 'https://www.familytreedna.com/groups/quraysh', notes: 'FGC8712 and L859 are markers associated with Qurayshi lineages per FTDNA project data.' },
             { nodeId: hashim.id, haplogroup: 'J1-FGC8703', type: DnaType.Y_DNA, subClade: 'J1-L859 > FGC8703', confidence: 0.80, source: 'FamilyTreeDNA Hashemite Project', studyUrl: 'https://www.familytreedna.com/groups/hashemite', notes: 'FGC8703 subclade identified in Hashemite lineage studies.' },
+            ...(tamimMarkerNode ? [{ nodeId: tamimMarkerNode.id, haplogroup: 'J1-L222.2', type: DnaType.Y_DNA, subClade: 'J1-M267 > L222.2', confidence: 0.70, source: 'FamilyTreeDNA Tamim Project', notes: 'L222.2 is frequently found in Tamimi branches in Najd.' }] : []),
+            ...(kindaMarkerNode ? [{ nodeId: kindaMarkerNode.id, haplogroup: 'J1-M267', type: DnaType.Y_DNA, subClade: 'J1-M267', confidence: 0.65, source: 'Generic Arabian DNA', notes: 'Kinda carries basal J1 markers typical of southern Arabian tribes.' }] : []),
+            ...(anazahMarkerNode ? [{ nodeId: anazahMarkerNode.id, haplogroup: 'J1-FGC4415', type: DnaType.Y_DNA, subClade: 'J1-M267 > P58 > FGC2', confidence: 0.72, source: 'FamilyTreeDNA Anazah Project', notes: 'FGC4415 is a major cluster within the Anazah confederation.' }] : []),
+            ...(shammarMarkerNode ? [{ nodeId: shammarMarkerNode.id, haplogroup: 'J1-FGC4453', type: DnaType.Y_DNA, subClade: 'J1-M267 > P58 > FGC5', confidence: 0.70, source: 'FamilyTreeDNA Shammar Project', notes: 'FGC4453 is frequently observed in Shammar lineages.' }] : []),
             { nodeId: azd.id, haplogroup: 'J1-Z640', type: DnaType.Y_DNA, subClade: 'J1-M267 > Z640', confidence: 0.82, sampleSize: 150, source: 'FamilyTreeDNA Azd Tribe Project', studyUrl: 'https://www.familytreedna.com/groups/azd-tribe', notes: 'The majority of Azd branches carry J1-Z640 across Saudi Arabia, Yemen, UAE, and Oman.' },
             { nodeId: adnan.id, haplogroup: 'J1-M267', type: DnaType.Y_DNA, subClade: 'J1-P58', confidence: 0.75, source: 'Multiple genetic studies', studyUrl: 'https://www.familytreedna.com/groups/j1-m267', notes: 'J1-M267 is the predominant haplogroup among Arabian Peninsula populations. Most Adnanite tribes fall under J1-P58 downstream subclades.' },
             { nodeId: qahtan.id, haplogroup: 'J1-M267', type: DnaType.Y_DNA, subClade: 'J1-P58 > L222.2', confidence: 0.70, source: 'Genetic studies on Yemeni populations', notes: 'Qahtanite tribes show high frequency of J1, with Yemen reaching ~72% J1 frequency.' },
