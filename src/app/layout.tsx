@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import SessionProvider from "@/components/providers/SessionProvider";
 import { Toaster } from "@/components/ui/sonner";
 import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
 
 export const metadata: Metadata = {
   title: "ArabTree | شجرة الأنساب",
@@ -34,8 +35,13 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <Header />
-            {children}
+            <div className="flex min-h-screen flex-col">
+              <Header />
+              <div className="flex-1">
+                {children}
+              </div>
+              <Footer />
+            </div>
             <Toaster />
           </ThemeProvider>
         </SessionProvider>
