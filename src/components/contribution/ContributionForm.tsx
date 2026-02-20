@@ -244,7 +244,7 @@ export function ContributionForm() {
                                         <FormItem>
                                             <FormLabel>الاسم بالعربية *</FormLabel>
                                             <FormControl>
-                                                <Input placeholder="عدنان" {...field} dir="rtl" className="text-lg font-arabic" />
+                                                <Input placeholder="عدنان" {...field} dir="rtl" className="text-lg" />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -365,7 +365,7 @@ export function ContributionForm() {
                                     {form.watch('nameAr') && (
                                         <>
                                             <div className="text-muted-foreground">الاسم بالعربية:</div>
-                                            <div className="font-medium font-arabic">{form.watch('nameAr')}</div>
+                                            <div className="font-medium">{form.watch('nameAr')}</div>
                                         </>
                                     )}
                                     {form.watch('name') && (

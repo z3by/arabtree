@@ -26,7 +26,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="font-arabic antialiased">
+      <body className="antialiased" style={{ fontFamily: "'Noto Kufi Arabic', system-ui, arial, sans-serif" }}>
         <SessionProvider>
           <ThemeProvider
             attribute="class"

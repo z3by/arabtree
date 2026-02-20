@@ -27,7 +27,7 @@ export function Header() {
 
     return (
         <>
-            <header className="sticky top-0 z-50 w-full glass">
+            <header className="sticky top-0 z-50 w-full bg-transparent dark:bg-background/80 backdrop-blur-xl border-b border-border/40">
                 <div className="container flex h-16 items-center justify-between px-4 md:px-6">
                     <div className="flex items-center gap-4">
                         <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
@@ -46,8 +46,8 @@ export function Header() {
                                 key={link.href}
                                 href={link.href}
                                 className={`relative text-sm font-medium px-3 py-2 rounded-lg transition-all flex items-center gap-1.5 ${isActiveRoute(link.href)
-                                        ? "text-primary bg-primary/5"
-                                        : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                                    ? "text-primary bg-primary/5"
+                                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                                     }`}
                             >
                                 {link.icon && <link.icon className="w-3.5 h-3.5" />}
@@ -107,8 +107,8 @@ export function Header() {
                                         key={link.href}
                                         href={link.href}
                                         className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${isActiveRoute(link.href)
-                                                ? "bg-primary/10 text-primary font-semibold"
-                                                : "hover:bg-muted text-foreground"
+                                            ? "bg-primary/10 text-primary font-semibold"
+                                            : "hover:bg-muted text-foreground"
                                             }`}
                                         onClick={() => setIsMenuOpen(false)}
                                     >
