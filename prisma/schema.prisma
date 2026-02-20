@@ -100,6 +100,8 @@ model LineageNode {
   // ── Hierarchy ──
   type            NodeType
   generationDepth Int           @default(0) // Distance from root (0 = root patriarch)
+  isDirectAncestor Boolean      @default(false) // Distinguishes direct lineage from lateral branches
+  isConfirmed     Boolean       @default(true) // Distinguishes confirmed lineage from disputed/conflicted data
 
   // ── Self-Referencing Relation (Parent ↔ Children) ──
   parentId        String?       @db.ObjectId

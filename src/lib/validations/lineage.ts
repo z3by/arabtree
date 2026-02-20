@@ -25,6 +25,7 @@ export const createLineageNodeSchema = z.object({
     era: z.string().max(100).optional(),
     latitude: z.number().min(-90).max(90).optional(),
     longitude: z.number().min(-180).max(180).optional(),
+    isDirectAncestor: z.boolean().optional(),
 })
 
 export type CreateLineageNodeInput = z.infer<typeof createLineageNodeSchema>
@@ -46,6 +47,7 @@ export const updateLineageNodeSchema = z.object({
     era: z.string().max(100).nullable().optional(),
     latitude: z.number().min(-90).max(90).nullable().optional(),
     longitude: z.number().min(-180).max(180).nullable().optional(),
+    isDirectAncestor: z.boolean().optional(),
 })
 
 export type UpdateLineageNodeInput = z.infer<typeof updateLineageNodeSchema>

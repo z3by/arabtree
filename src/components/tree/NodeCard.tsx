@@ -15,6 +15,8 @@ interface NodeData {
     birthYear?: number
     deathYear?: number
     childCount?: number
+    isDirectAncestor?: boolean
+    isConfirmed?: boolean
     expanded?: boolean
     onToggle?: (nodeId: string) => void
 }
@@ -27,16 +29,27 @@ const typeColors: Record<string, { badge: string; ring: string }> = {
     INDIVIDUAL: { badge: 'bg-rose-100 text-rose-800 border-rose-200 dark:bg-rose-900/40 dark:text-rose-300 dark:border-rose-700', ring: 'ring-rose-400/50' },
 }
 
+const typeTranslations: Record<string, string> = {
+    ROOT: 'جذر',
+    TRIBE: 'قبيلة',
+    CLAN: 'عشيرة',
+    FAMILY: 'عائلة',
+    INDIVIDUAL: 'فرد',
+}
+
 const NodeCard = ({ id, data }: { id: string; data: NodeData }) => {
     const nodeId = data.id || id
     const hasChildren = data.childCount && data.childCount > 0
     const colors = typeColors[data.type] || { badge: 'bg-primary/5 border-primary/20 text-primary', ring: 'ring-primary/50' }
 
+    // If data.isConfirmed is explicitly false, style as unconfirmed. Otherwise assume true.
+    const isUnconfirmed = data.isConfirmed === false
+
     return (
-        <div className="relative group animate-grow-tree">
+        <div className={`relative group animate-grow-tree ${isUnconfirmed ? 'opacity-70 hover:opacity-100 transition-opacity' : ''}`}>
             <Handle type="target" position={Position.Top} className="!bg-primary/60 w-3 h-3 !border-2 !border-background" />
 
-            <Card className={`w-[210px] glass-card border-none hover:shadow-xl hover:scale-105 transition-all duration-300 ${data.expanded && hasChildren ? `ring-2 ${colors.ring}` : ''}`}>
+            <Card className={`w-[210px] glass-card hover:shadow-xl hover:scale-105 transition-all duration-300 ${isUnconfirmed ? 'border-2 border-dashed border-muted-foreground/50' : 'border-none'} ${data.expanded && hasChildren && !isUnconfirmed ? `ring-2 ${colors.ring}` : ''} ${data.isDirectAncestor && !isUnconfirmed ? 'ring-2 ring-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.5)] dark:shadow-[0_0_15px_rgba(245,158,11,0.3)]' : ''}`}>
                 {/* Info link */}
                 <Link
                     href={`/tree/${nodeId}`}
@@ -49,8 +62,18 @@ const NodeCard = ({ id, data }: { id: string; data: NodeData }) => {
 
                 <CardHeader className="p-3 pb-2 text-center space-y-1">
                     <Badge variant="outline" className={`w-fit mx-auto text-[10px] px-2 py-0 h-5 mb-1 ${colors.badge}`}>
-                        {data.type}
+                        {typeTranslations[data.type] || data.type}
                     </Badge>
+                    {isUnconfirmed && (
+                        <div className="text-[10px] items-center justify-center font-bold text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-900/30 rounded-full px-2 py-0.5 mx-auto w-fit mb-1 border border-orange-200 dark:border-orange-800">
+                            ⚠️ نسب مُختلف فيه
+                        </div>
+                    )}
+                    {data.isDirectAncestor && (
+                        <div className="absolute top-0 right-0 -mt-2 -mr-2 flex items-center justify-center w-6 h-6 bg-gradient-to-br from-amber-300 to-amber-600 text-white rounded-full shadow-[0_0_10px_rgba(245,158,11,0.6)] z-20">
+                            <span className="text-xs">⭐</span>
+                        </div>
+                    )}
                     <CardTitle className="text-lg font-bold leading-none">{data.nameAr}</CardTitle>
                     <div className="text-xs text-muted-foreground font-medium">{data.label}</div>
                     {(data.title || data.epithet) && (

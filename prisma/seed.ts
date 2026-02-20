@@ -22,7 +22,7 @@ async function main() {
     const ibrahim = await prisma.lineageNode.create({
         data: {
             name: 'Ibrahim (Abraham)', nameAr: 'إبراهيم', type: NodeType.ROOT, status: NodeStatus.PUBLISHED,
-            generationDepth: -3, childCount: 1,
+            generationDepth: -3, childCount: 1, isDirectAncestor: true,
             title: 'أبو الأنبياء الخليل',
             biography: 'The Patriarch Abraham, revered in Islam, Christianity, and Judaism. Built the Kaaba in Mecca with his son Ishmael. Source: Quran.',
             biographyAr: 'أبو الأنبياء الخليل. بنى الكعبة في مكة مع ابنه إسماعيل. المصدر: القرآن الكريم.',
@@ -34,7 +34,7 @@ async function main() {
     const ismail = await prisma.lineageNode.create({
         data: {
             name: "Isma'il", nameAr: 'إسماعيل', type: NodeType.INDIVIDUAL, status: NodeStatus.PUBLISHED,
-            generationDepth: -2, parentId: ibrahim.id, childCount: 1,
+            generationDepth: -2, parentId: ibrahim.id, childCount: 1, isDirectAncestor: true,
             title: 'ذبيح الله',
             biography: 'Son of Abraham and ancestor of the Northern Arabs. Settled in Mecca and helped his father build the Kaaba. Source: Quran, Ibn Hisham.',
             biographyAr: 'ابن إبراهيم وجد العرب المستعربة. استقر في مكة وساعد أباه في بناء الكعبة. المصدر: القرآن الكريم، ابن هشام.',
@@ -46,7 +46,7 @@ async function main() {
     const qedar = await prisma.lineageNode.create({
         data: {
             name: 'Qedar', nameAr: 'قيدار بن إسماعيل', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED,
-            generationDepth: -1, parentId: ismail.id, childCount: 1,
+            generationDepth: -1, parentId: ismail.id, childCount: 1, isDirectAncestor: true,
             biography: 'Son of Ishmael. He is the traditional ancestor of the Qedarites, a powerful tribal confederacy. Adnan descends from him. Source: Biblical/Islamic tradition.',
             biographyAr: 'ابن إسماعيل وجد قبائل قيدار القوية. تنحدر العرب العدنانية من نسله. المصدر: التراث الديني والتاريخي.',
             birthPlace: 'الحجاز / الشام', era: 'العصور القديمة',
@@ -57,7 +57,7 @@ async function main() {
     const adnan = await prisma.lineageNode.create({
         data: {
             name: 'Adnan', nameAr: 'عدنان', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED,
-            generationDepth: 0, parentId: qedar.id, childCount: 2,
+            generationDepth: 0, parentId: qedar.id, childCount: 2, isDirectAncestor: true,
             title: 'أبو العرب العدنانية',
             biography: 'The traditional ancestor of the Adnanite (Northern) Arabs. According to Islamic tradition, he is a descendant of Ishmael (Isma\'il) son of Abraham (Ibrahim). The Prophet Muhammad\'s lineage traces back to Adnan. His genealogy is documented in Ibn al-Kalbi\'s Jamharat al-Nasab and al-Tabari\'s Tarikh.',
             biographyAr: 'الجد الجامع للعرب العدنانية (عرب الشمال). ينحدر من إسماعيل بن إبراهيم عليهما السلام حسب الإجماع الإسلامي. يرجع نسب النبي محمد ﷺ إليه. وثّق نسبه ابن الكلبي في جمهرة النسب والطبري في تاريخه.',
@@ -69,7 +69,7 @@ async function main() {
     const maad = await prisma.lineageNode.create({
         data: {
             name: "Ma'ad", nameAr: 'معد بن عدنان', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED,
-            generationDepth: 1, parentId: adnan.id, childCount: 1,
+            generationDepth: 1, parentId: adnan.id, childCount: 1, isDirectAncestor: true,
             biography: 'Son of Adnan and father of Nizar. The forefather of the major northern Arab tribal confederations. Referenced in pre-Islamic poetry and in Jamharat al-Nasab.',
             biographyAr: 'ابن عدنان وأبو نزار. جدّ القبائل العدنانية الكبرى. ورد ذكره في الشعر الجاهلي وجمهرة النسب.',
             birthPlace: 'الحجاز', era: 'ما قبل الإسلام',
@@ -80,7 +80,7 @@ async function main() {
     const nizar = await prisma.lineageNode.create({
         data: {
             name: 'Nizar', nameAr: 'نزار بن معد', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED,
-            generationDepth: 2, parentId: maad.id, childCount: 4,
+            generationDepth: 2, parentId: maad.id, childCount: 4, isDirectAncestor: true,
             biography: 'Son of Ma\'ad. Common ancestor of most northern Arab tribes. His four sons — Mudar, Rabi\'a, Iyad, and Anmar — founded the great tribal branches. Source: Ibn al-Kalbi, Jamharat al-Nasab.',
             biographyAr: 'ابن معد. الجد المشترك لمعظم قبائل العرب الشمالية. أبناؤه الأربعة — مضر وربيعة وإياد وأنمار — أسسوا الفروع القبلية الكبرى. المصدر: ابن الكلبي، جمهرة النسب.',
             birthPlace: 'نجد', era: 'ما قبل الإسلام',
@@ -93,7 +93,7 @@ async function main() {
     const mudar = await prisma.lineageNode.create({
         data: {
             name: 'Mudar', nameAr: 'مضر بن نزار', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED,
-            generationDepth: 3, parentId: nizar.id, childCount: 2,
+            generationDepth: 3, parentId: nizar.id, childCount: 2, isDirectAncestor: true,
             title: 'مضر الحمراء',
             biography: 'Son of Nizar. Progenitor of the Mudarite tribes, the largest Adnanite confederation. Split into two branches: Qays \'Aylan and Khindif. The Quraysh tribe descends from this line. Source: Jamharat al-Nasab.',
             biographyAr: 'ابن نزار. جدّ قبائل مضر، أكبر تجمع عدناني. انقسمت إلى فرعين: قيس عيلان وخندف. قبيلة قريش من هذا النسل. المصدر: جمهرة النسب.',
@@ -138,7 +138,7 @@ async function main() {
     await prisma.lineageNode.createMany({
         data: [
             { name: "Khath'am", nameAr: 'خثعم', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED, generationDepth: 4, parentId: anmar.id, childCount: 0, biography: 'A powerful tribe in the Asir region. Source: Ibn al-Kalbi.', biographyAr: 'قبيلة قوية في منطقة عسير. المصدر: ابن الكلبي.', birthPlace: 'عسير', era: 'ما قبل الإسلام', latitude: 19.50, longitude: 42.50 },
-            { name: 'Bajila', nameAr: 'بجيلة', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED, generationDepth: 4, parentId: anmar.id, childCount: 0, biography: 'A tribe from the Sarat mountains. The famous companion Jarir al-Bajali was from them. Source: Jamharat al-Nasab.', biographyAr: 'قبيلة من جبال السراة. الصحابي الجليل جرير البجلي كان منهم. المصدر: جمهرة النسب.', birthPlace: 'السراة', era: 'ما قبل الإسلام', latitude: 20.00, longitude: 41.50 },
+            { name: 'Bajila', nameAr: 'بجيلة', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED, generationDepth: 4, parentId: anmar.id, childCount: 0, isConfirmed: false, biography: 'A tribe from the Sarat mountains. The famous companion Jarir al-Bajali was from them. Source: Jamharat al-Nasab.', biographyAr: 'قبيلة من جبال السراة. الصحابي الجليل جرير البجلي كان منهم. المصدر: جمهرة النسب.', birthPlace: 'السراة', era: 'ما قبل الإسلام', latitude: 20.00, longitude: 41.50 },
         ]
     })
 
@@ -158,7 +158,7 @@ async function main() {
     const khindif = await prisma.lineageNode.create({
         data: {
             name: 'Khindif', nameAr: 'خندف (إلياس بن مضر)', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED,
-            generationDepth: 4, parentId: mudar.id, childCount: 4,
+            generationDepth: 4, parentId: mudar.id, childCount: 4, isDirectAncestor: true,
             alternateNames: ['Ilyas ibn Mudar', 'إلياس'],
             biography: 'Also known as Ilyas ibn Mudar. The branch that includes Kinanah (and thus Quraysh), Tamim, Hudhayl, and Asad. Source: Ibn Hisham, al-Sirah.',
             biographyAr: 'يُعرف أيضًا بإلياس بن مضر. الفرع الذي يشمل كنانة (وبالتالي قريش) وتميم وهذيل وأسد. المصدر: ابن هشام، السيرة.',
@@ -207,7 +207,7 @@ async function main() {
     const khuzaimah = await prisma.lineageNode.create({
         data: {
             name: 'Khuzaimah', nameAr: 'خزيمة بن مدركة', type: NodeType.INDIVIDUAL, status: NodeStatus.PUBLISHED,
-            generationDepth: 5, parentId: khindif.id, childCount: 1,
+            generationDepth: 5, parentId: khindif.id, childCount: 1, isDirectAncestor: true,
             biography: 'Ancestor of Kinanah and Asad. Source: Ibn al-Kalbi.',
             biographyAr: 'جد كنانة وأسد. المصدر: ابن الكلبي.',
             birthPlace: 'الحجاز', era: 'ما قبل الإسلام', latitude: 22.00, longitude: 40.00
@@ -217,7 +217,7 @@ async function main() {
     const kinanah = await prisma.lineageNode.create({
         data: {
             name: 'Kinanah', nameAr: 'كنانة', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED,
-            generationDepth: 6, parentId: khuzaimah.id, childCount: 1,
+            generationDepth: 6, parentId: khuzaimah.id, childCount: 1, isDirectAncestor: true,
             biography: 'A major Mudarite tribe from which Quraysh descends. Settled around Mecca and the Tihama. Source: Ibn al-Kalbi.',
             biographyAr: 'قبيلة مضرية كبرى تنحدر منها قريش. استقرت حول مكة وتهامة. المصدر: ابن الكلبي.',
             birthPlace: 'مكة المكرمة', era: 'ما قبل الإسلام',
@@ -238,7 +238,7 @@ async function main() {
     const quraysh = await prisma.lineageNode.create({
         data: {
             name: 'Quraysh', nameAr: 'قريش', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED,
-            generationDepth: 7, parentId: kinanah.id, childCount: 1,
+            generationDepth: 7, parentId: kinanah.id, childCount: 1, isDirectAncestor: true,
             title: 'سادة مكة',
             biography: 'The ruling tribe of Mecca and custodians of the Kaaba. The Prophet Muhammad ﷺ was from Quraysh. Named in the Quran (Surah Quraysh, 106). Source: Ibn Hisham, al-Sirah.',
             biographyAr: 'القبيلة الحاكمة في مكة وسدنة الكعبة. النبي محمد ﷺ من قريش. ورد ذكرها في القرآن (سورة قريش، 106). المصدر: ابن هشام، السيرة.',
@@ -248,29 +248,29 @@ async function main() {
     })
 
     const ghalib = await prisma.lineageNode.create({
-        data: { name: 'Ghalib ibn Fihr', nameAr: 'غالب بن فهر', type: NodeType.INDIVIDUAL, status: NodeStatus.PUBLISHED, generationDepth: 8, parentId: quraysh.id, childCount: 1, biography: 'Ancestor of most prominent Qurayshi clans. Source: Ibn Hisham.', biographyAr: 'جد أبرز بطون قريش. المصدر: ابن هشام.', birthPlace: 'مكة المكرمة', era: 'ما قبل الإسلام', latitude: 21.42, longitude: 39.82 }
+        data: { name: 'Ghalib ibn Fihr', nameAr: 'غالب بن فهر', type: NodeType.INDIVIDUAL, status: NodeStatus.PUBLISHED, generationDepth: 8, parentId: quraysh.id, childCount: 1, isDirectAncestor: true, biography: 'Ancestor of most prominent Qurayshi clans. Source: Ibn Hisham.', biographyAr: 'جد أبرز بطون قريش. المصدر: ابن هشام.', birthPlace: 'مكة المكرمة', era: 'ما قبل الإسلام', latitude: 21.42, longitude: 39.82 }
     })
 
     const kab = await prisma.lineageNode.create({
-        data: { name: "Ka'b ibn Lu'ayy", nameAr: 'كعب بن لؤي', type: NodeType.INDIVIDUAL, status: NodeStatus.PUBLISHED, generationDepth: 10, parentId: ghalib.id, childCount: 2, biography: 'A revered ancestor in Quraysh. He initiated the Friday gatherings. Source: Ibn Sa\'d.', biographyAr: 'جد محترم في قريش. هو أول من جمع الناس يوم الجمعة. المصدر: ابن سعد.', birthPlace: 'مكة المكرمة', era: 'ما قبل الإسلام', latitude: 21.42, longitude: 39.82 }
+        data: { name: "Ka'b ibn Lu'ayy", nameAr: 'كعب بن لؤي', type: NodeType.INDIVIDUAL, status: NodeStatus.PUBLISHED, generationDepth: 10, parentId: ghalib.id, childCount: 2, isDirectAncestor: true, biography: 'A revered ancestor in Quraysh. He initiated the Friday gatherings. Source: Ibn Sa\'d.', biographyAr: 'جد محترم في قريش. هو أول من جمع الناس يوم الجمعة. المصدر: ابن سعد.', birthPlace: 'مكة المكرمة', era: 'ما قبل الإسلام', latitude: 21.42, longitude: 39.82 }
     })
 
     const kilab = await prisma.lineageNode.create({
-        data: { name: 'Kilab ibn Murrah', nameAr: 'كلاب بن مرة', type: NodeType.INDIVIDUAL, status: NodeStatus.PUBLISHED, generationDepth: 12, parentId: kab.id, childCount: 2, biography: 'Father of Qusai and Zuhrah. Real name was Hakim or Urwah. Source: Ibn Hisham.', biographyAr: 'أبو قصي وزهرة. اسمه الحقيقي حكيم أو عروة. المصدر: ابن هشام.', birthPlace: 'مكة المكرمة', era: 'ما قبل الإسلام', latitude: 21.42, longitude: 39.82 }
+        data: { name: 'Kilab ibn Murrah', nameAr: 'كلاب بن مرة', type: NodeType.INDIVIDUAL, status: NodeStatus.PUBLISHED, generationDepth: 12, parentId: kab.id, childCount: 2, isDirectAncestor: true, biography: 'Father of Qusai and Zuhrah. Real name was Hakim or Urwah. Source: Ibn Hisham.', biographyAr: 'أبو قصي وزهرة. اسمه الحقيقي حكيم أو عروة. المصدر: ابن هشام.', birthPlace: 'مكة المكرمة', era: 'ما قبل الإسلام', latitude: 21.42, longitude: 39.82 }
     })
 
     const qusai = await prisma.lineageNode.create({
-        data: { name: 'Qusai ibn Kilab', nameAr: 'قصي بن كلاب', type: NodeType.INDIVIDUAL, status: NodeStatus.PUBLISHED, generationDepth: 13, parentId: kilab.id, childCount: 1, title: 'مُجمِّع', biography: 'Unified Quraysh and established custodianship of the Kaaba, Dar al-Nadwa, and Siqaya. Source: Ibn Hisham.', biographyAr: 'وحد قريش وأسس سدانة الكعبة ودار الندوة والسقاية. المصدر: ابن هشام.', birthPlace: 'مكة المكرمة', era: 'ما قبل الإسلام', latitude: 21.42, longitude: 39.82 }
+        data: { name: 'Qusai ibn Kilab', nameAr: 'قصي بن كلاب', type: NodeType.INDIVIDUAL, status: NodeStatus.PUBLISHED, generationDepth: 13, parentId: kilab.id, childCount: 1, isDirectAncestor: true, title: 'مُجمِّع', biography: 'Unified Quraysh and established custodianship of the Kaaba, Dar al-Nadwa, and Siqaya. Source: Ibn Hisham.', biographyAr: 'وحد قريش وأسس سدانة الكعبة ودار الندوة والسقاية. المصدر: ابن هشام.', birthPlace: 'مكة المكرمة', era: 'ما قبل الإسلام', latitude: 21.42, longitude: 39.82 }
     })
 
     const abdManaf = await prisma.lineageNode.create({
-        data: { name: 'Abd Manaf', nameAr: 'عبد مناف', type: NodeType.INDIVIDUAL, status: NodeStatus.PUBLISHED, generationDepth: 14, parentId: qusai.id, childCount: 4, biography: 'Father of Hashim, Abd Shams, Nawfal, and Muttalib. Highly respected in Mecca. Source: Ibn Hisham.', biographyAr: 'أبو هاشم وعبد شمس ونوفل والمطلب. كان عظيم القدر في مكة. المصدر: ابن هشام.', birthPlace: 'مكة المكرمة', era: 'ما قبل الإسلام', latitude: 21.42, longitude: 39.82 }
+        data: { name: 'Abd Manaf', nameAr: 'عبد مناف', type: NodeType.INDIVIDUAL, status: NodeStatus.PUBLISHED, generationDepth: 14, parentId: qusai.id, childCount: 4, isDirectAncestor: true, biography: 'Father of Hashim, Abd Shams, Nawfal, and Muttalib. Highly respected in Mecca. Source: Ibn Hisham.', biographyAr: 'أبو هاشم وعبد شمس ونوفل والمطلب. كان عظيم القدر في مكة. المصدر: ابن هشام.', birthPlace: 'مكة المكرمة', era: 'ما قبل الإسلام', latitude: 21.42, longitude: 39.82 }
     })
 
     const hashim = await prisma.lineageNode.create({
         data: {
             name: 'Banu Hashim', nameAr: 'بنو هاشم', type: NodeType.CLAN, status: NodeStatus.PUBLISHED,
-            generationDepth: 15, parentId: abdManaf.id, childCount: 1,
+            generationDepth: 15, parentId: abdManaf.id, childCount: 1, isDirectAncestor: true,
             title: 'آل البيت',
             biography: 'The clan of the Prophet Muhammad ﷺ within Quraysh. Named after Hashim ibn Abd Manaf, who established the trade caravans to Yemen and Syria. Source: Ibn Hisham.',
             biographyAr: 'بطن النبي محمد ﷺ من قريش. سُمي نسبة إلى هاشم بن عبد مناف الذي أسس رحلتي الشتاء والصيف التجاريتين. المصدر: ابن هشام.',
@@ -282,7 +282,7 @@ async function main() {
     const umayya = await prisma.lineageNode.create({
         data: {
             name: 'Banu Umayya', nameAr: 'بنو أمية', type: NodeType.CLAN, status: NodeStatus.PUBLISHED,
-            generationDepth: 15, parentId: abdManaf.id, childCount: 0,
+            generationDepth: 15, parentId: abdManaf.id, childCount: 1,
             biography: 'A major clan of Quraysh. They established the Umayyad Caliphate (661–750 CE), the first great Muslim dynasty. Source: al-Tabari.',
             biographyAr: 'بطن رئيسي من قريش. أسسوا الخلافة الأموية (661-750م)، أول سلالة إسلامية كبرى. المصدر: الطبري.',
             birthPlace: 'مكة المكرمة', era: 'ما قبل الإسلام',
@@ -290,10 +290,30 @@ async function main() {
         },
     })
 
+    const taym = await prisma.lineageNode.create({
+        data: {
+            name: 'Banu Taym', nameAr: 'بنو تيم', type: NodeType.CLAN, status: NodeStatus.PUBLISHED,
+            generationDepth: 13, parentId: kilab.id, childCount: 1,
+            biography: 'A clan of Quraysh. Famous for Abu Bakr al-Siddiq, the first Caliph. Source: Ibn Hisham, al-Tabari.',
+            biographyAr: 'بطن من قريش. اشتهروا بأبي بكر الصديق، الخليفة الأول. المصدر: ابن هشام، الطبري.',
+            birthPlace: 'مكة المكرمة', era: 'ما قبل الإسلام',
+        },
+    })
+
+    const adi = await prisma.lineageNode.create({
+        data: {
+            name: 'Banu Adi', nameAr: 'بنو عدي', type: NodeType.CLAN, status: NodeStatus.PUBLISHED,
+            generationDepth: 12, parentId: kab.id, childCount: 1,
+            biography: 'A clan of Quraysh responsible for diplomacy (Sifarah). Famous for Umar ibn al-Khattab. Source: al-Durrah.',
+            biographyAr: 'بطن من قريش تولى السفارة. اشتهروا بعمر بن الخطاب. المصدر: الدرة.',
+            birthPlace: 'مكة المكرمة', era: 'ما قبل الإسلام',
+        },
+    })
+
     const makhzum = await prisma.lineageNode.create({
         data: {
             name: 'Banu Makhzum', nameAr: 'بنو مخزوم', type: NodeType.CLAN, status: NodeStatus.PUBLISHED,
-            generationDepth: 11, parentId: kab.id, childCount: 0,
+            generationDepth: 11, parentId: kab.id, childCount: 1,
             title: 'ريحانة قريش',
             biography: 'A prominent, wealthy, and politically powerful clan of Quraysh known for their military leadership, such as Khalid ibn al-Walid. Source: Ibn Hisham.',
             biographyAr: 'بطن بارز وثري ذو نفوذ سياسي في قريش، عُرفوا بقيادتهم العسكرية، مثل خالد بن الوليد. المصدر: ابن هشام.',
@@ -302,16 +322,97 @@ async function main() {
         },
     })
 
+    // ── Individual prominent figures ──
+
+    await prisma.lineageNode.createMany({
+        data: [
+            { name: "Abu Bakr al-Siddiq", nameAr: "أبو بكر الصديق", type: NodeType.INDIVIDUAL, status: NodeStatus.PUBLISHED, generationDepth: 16, parentId: taym.id, childCount: 0, biography: "The first Caliph of Islam and the closest companion of the Prophet Muhammad ﷺ.", biographyAr: "الخليفة الأول للإسلام وأقرب صحابة النبي محمد ﷺ.", birthYear: 573, deathYear: 634, birthPlace: "مكة المكرمة", era: "صدر الإسلام" },
+            { name: "Umar ibn al-Khattab", nameAr: "عمر بن الخطاب", type: NodeType.INDIVIDUAL, status: NodeStatus.PUBLISHED, generationDepth: 16, parentId: adi.id, childCount: 0, biography: "The second Caliph of Islam. Known as Al-Faruq.", biographyAr: "الخليفة الثاني للإسلام. يلقب بالفاروق.", birthYear: 584, deathYear: 644, birthPlace: "مكة المكرمة", era: "صدر الإسلام" },
+            { name: "Uthman ibn Affan", nameAr: "عثمان بن عفان", type: NodeType.INDIVIDUAL, status: NodeStatus.PUBLISHED, generationDepth: 16, parentId: umayya.id, childCount: 0, biography: "The third Caliph of Islam. Known as Dhul-Nurayn.", biographyAr: "الخليفة الثالث للإسلام. يلقب بذي النورين.", birthYear: 576, deathYear: 656, birthPlace: "مكة المكرمة", era: "صدر الإسلام" },
+            { name: "Khalid ibn al-Walid", nameAr: "خالد بن الوليد", type: NodeType.INDIVIDUAL, status: NodeStatus.PUBLISHED, generationDepth: 13, parentId: makhzum.id, childCount: 0, biography: "Legendary Muslim commander. Known as the Drawn Sword of God.", biographyAr: "قائد إسلامي أسطوري. يلقب بسيف الله المسلول.", birthYear: 585, deathYear: 642, birthPlace: "مكة المكرمة", era: "صدر الإسلام" }
+        ]
+    })
+
     const abdAlMuttalib = await prisma.lineageNode.create({
         data: {
             name: 'Abd al-Muttalib', nameAr: 'عبد المطلب', type: NodeType.INDIVIDUAL, status: NodeStatus.PUBLISHED,
-            generationDepth: 16, parentId: hashim.id, childCount: 0,
+            generationDepth: 16, parentId: hashim.id, childCount: 2, isDirectAncestor: true,
             title: 'شيبة الحمد',
             biography: 'Grandfather of the Prophet Muhammad ﷺ. He rediscovered the well of Zamzam and was the leader of Quraysh during the Year of the Elephant. Source: Ibn Hisham.',
             biographyAr: 'جد النبي محمد ﷺ. حفر بئر زمزم وكان سيد قريش في عام الفيل. المصدر: ابن هشام.',
             birthPlace: 'مكة المكرمة', era: 'ما قبل الإسلام',
             latitude: 21.4225, longitude: 39.8262,
         },
+    })
+
+    const abuTalib = await prisma.lineageNode.create({
+        data: {
+            name: 'Abu Talib', nameAr: 'أبو طالب', type: NodeType.INDIVIDUAL, status: NodeStatus.PUBLISHED,
+            generationDepth: 17, parentId: abdAlMuttalib.id, childCount: 1,
+            biography: 'Uncle and protector of the Prophet Muhammad ﷺ. Father of Ali. Source: Ibn Hisham.',
+            biographyAr: 'عم النبي محمد ﷺ وكافله. أبو علي بن أبي طالب. المصدر: ابن هشام.',
+            birthPlace: 'مكة المكرمة', era: 'صدر الإسلام',
+            birthYear: 535, deathYear: 619,
+        }
+    })
+
+    const ali = await prisma.lineageNode.create({
+        data: {
+            name: 'Ali ibn Abi Talib', nameAr: 'علي بن أبي طالب', type: NodeType.INDIVIDUAL, status: NodeStatus.PUBLISHED,
+            generationDepth: 18, parentId: abuTalib.id, childCount: 2,
+            title: 'أمير المؤمنين',
+            biography: 'Cousin and son-in-law of the Prophet ﷺ. The fourth Caliph. Father of Al-Hasan and Al-Husayn. Source: Al-Tabari.',
+            biographyAr: 'ابن عم النبي ﷺ وصهره. الخليفة الراشد الرابع. أبو الحسن والحسين. المصدر: الطبري.',
+            birthPlace: 'مكة المكرمة', era: 'صدر الإسلام',
+            birthYear: 599, deathYear: 661,
+        }
+    })
+
+    const alHasan = await prisma.lineageNode.create({
+        data: {
+            name: 'Al-Hasan ibn Ali', nameAr: 'الحسن بن علي', type: NodeType.INDIVIDUAL, status: NodeStatus.PUBLISHED,
+            generationDepth: 19, parentId: ali.id, childCount: 0,
+            title: 'سيد شباب أهل الجنة',
+            biography: 'Eldest grandson of the Prophet ﷺ. Fifth Caliph briefly before abdicating to Muawiyah to unify Muslims. Source: Al-Tabari.',
+            biographyAr: 'السبط الأكبر للنبي ﷺ. تنازل عن الخلافة لمعاوية حقناً لدماء المسلمين. المصدر: الطبري.',
+            birthPlace: 'المدينة المنورة', era: 'صدر الإسلام',
+            birthYear: 625, deathYear: 670,
+        }
+    })
+
+    const alHusayn = await prisma.lineageNode.create({
+        data: {
+            name: 'Al-Husayn ibn Ali', nameAr: 'الحسين بن علي', type: NodeType.INDIVIDUAL, status: NodeStatus.PUBLISHED,
+            generationDepth: 19, parentId: ali.id, childCount: 0,
+            title: 'سيد الشهداء',
+            biography: 'Younger grandson of the Prophet ﷺ. Martyred at the Battle of Karbala. Source: Al-Tabari.',
+            biographyAr: 'السبط الأصغر للنبي ﷺ. استشهد في معركة كربلاء. المصدر: الطبري.',
+            birthPlace: 'المدينة المنورة', era: 'العصر الأموي',
+            birthYear: 626, deathYear: 680,
+        }
+    })
+
+    const alAbbas = await prisma.lineageNode.create({
+        data: {
+            name: 'Al-Abbas ibn Abd al-Muttalib', nameAr: 'العباس بن عبد المطلب', type: NodeType.INDIVIDUAL, status: NodeStatus.PUBLISHED,
+            generationDepth: 17, parentId: abdAlMuttalib.id, childCount: 1,
+            biography: 'Uncle of the Prophet Muhammad ﷺ. Ancestor of the Abbasid Caliphs. Source: Al-Tabari.',
+            biographyAr: 'عم النبي محمد ﷺ. جد الخلفاء العباسيين. المصدر: الطبري.',
+            birthPlace: 'مكة المكرمة', era: 'صدر الإسلام',
+            birthYear: 568, deathYear: 653,
+        }
+    })
+
+    const abdullahIbnAbbas = await prisma.lineageNode.create({
+        data: {
+            name: 'Abdullah ibn Abbas', nameAr: 'عبد الله بن عباس', type: NodeType.INDIVIDUAL, status: NodeStatus.PUBLISHED,
+            generationDepth: 18, parentId: alAbbas.id, childCount: 0,
+            title: 'حبر الأمة',
+            biography: 'Cousin of the Prophet ﷺ. Renowned as the most knowledgeable scholar of the Quran and Tafsir. Source: Sahih Bukhari.',
+            biographyAr: 'ابن عم النبي ﷺ. اشتهر بأنه حبر الأمة وأعلمها بتفسير القرآن. المصدر: صحيح البخاري.',
+            birthPlace: 'مكة المكرمة', era: 'صدر الإسلام',
+            birthYear: 619, deathYear: 687,
+        }
     })
 
     await prisma.lineageNode.createMany({
@@ -437,7 +538,7 @@ async function main() {
     // ── Himyar subtribes ──
     await prisma.lineageNode.createMany({
         data: [
-            { name: "Quda'a", nameAr: 'قضاعة', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED, generationDepth: 5, parentId: himyar.id, childCount: 0, biography: 'A major Himyarite confederation. Genealogists debate whether they belong to Himyar or Adnan. Source: Jamharat al-Nasab.', biographyAr: 'تحالف حميري كبير. اختلف النسابون في نسبتهم لحمير أو عدنان. المصدر: جمهرة النسب.', birthPlace: 'اليمن', era: 'ما قبل الإسلام', latitude: 14.80, longitude: 44.00 },
+            { name: "Quda'a", nameAr: 'قضاعة', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED, generationDepth: 5, parentId: himyar.id, childCount: 0, isConfirmed: false, biography: 'A major Himyarite confederation. Genealogists debate whether they belong to Himyar or Adnan. Source: Jamharat al-Nasab.', biographyAr: 'تحالف حميري كبير. اختلف النسابون في نسبتهم لحمير أو عدنان. المصدر: جمهرة النسب.', birthPlace: 'اليمن', era: 'ما قبل الإسلام', latitude: 14.80, longitude: 44.00 },
             { name: 'Zaid al-Jamhur', nameAr: 'زيد الجمهور', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED, generationDepth: 5, parentId: himyar.id, childCount: 0, biography: 'A Himyarite sept. Source: al-Hamdani.', biographyAr: 'بطن من حمير. المصدر: الهمداني.', birthPlace: 'اليمن', era: 'ما قبل الإسلام', latitude: 14.50, longitude: 44.20 },
         ],
     })
@@ -494,6 +595,47 @@ async function main() {
             { name: "Khuza'a", nameAr: 'خزاعة', type: NodeType.CLAN, status: NodeStatus.PUBLISHED, generationDepth: 6, parentId: azd.id, childCount: 0, biography: 'An Azdite tribe that ruled Mecca before Quraysh. They were allies of the Prophet Muhammad ﷺ. Source: Ibn Hisham.', biographyAr: 'قبيلة أزدية حكمت مكة قبل قريش. كانوا حلفاء للنبي ﷺ. المصدر: ابن هشام.', birthPlace: 'مكة المكرمة', era: 'ما قبل الإسلام', latitude: 21.4225, longitude: 39.8262 },
         ],
     })
+
+    // ═══════════════════════════════════════════════
+    // LEVANT & MODERN TRIBES (Syria, Jordan, etc.)
+    // ═══════════════════════════════════════════════
+
+    const tayyId = await prisma.lineageNode.findFirst({ where: { name: "Tayy'" } }).then(n => n?.id);
+    const anazahId = await prisma.lineageNode.findFirst({ where: { name: "'Anazah" } }).then(n => n?.id);
+    const tamimId = await prisma.lineageNode.findFirst({ where: { name: 'Tamim' } }).then(n => n?.id);
+    const qudaaId = await prisma.lineageNode.findFirst({ where: { name: "Quda'a" } }).then(n => n?.id);
+    const qaysAylanId = await prisma.lineageNode.findFirst({ where: { name: "Qays 'Aylan" } }).then(n => n?.id);
+
+    const levantTribes = [];
+    if (tayyId) {
+        levantTribes.push({ name: 'Shammar', nameAr: 'شمر', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED, generationDepth: 10, parentId: tayyId, childCount: 0, biography: 'A huge confederation descended from Tayy. Spread across Najd, Iraq, and Syria. Source: Ibn Khaldun.', biographyAr: 'تحالف ضخم ينحدر من طيئ. ينتشر في نجد والعراق وسوريا. المصدر: ابن خلدون.', birthPlace: 'حائل / الشام', era: 'العصور الوسطى', latitude: 27.52, longitude: 41.69 });
+        levantTribes.push({ name: 'Bani Sakhr', nameAr: 'بني صخر', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED, generationDepth: 10, parentId: tayyId, childCount: 0, biography: 'A prominent Jordanian Bedouin tribe of Tayyite descent. Played a vital role in Jordan\'s history. Source: Peake Pasha.', biographyAr: 'قبيلة بدوية أردنية بارزة من أصول طائية. لعبت دوراً حيوياً في تاريخ الأردن. المصدر: بيك باشا.', birthPlace: 'الأردن', era: 'العصور الحديثة', latitude: 31.5, longitude: 36.2 });
+    }
+    if (anazahId) {
+        levantTribes.push({ name: 'Al-Ruwailah', nameAr: 'الرولة', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED, generationDepth: 9, parentId: anazahId, childCount: 0, biography: 'The largest branch of the \'Anazah confederation in the Syrian desert. Famous for their camel breeding. Source: Alois Musil.', biographyAr: 'أكبر فروع تحالف عنزة في بادية الشام. اشتهروا بتربية الإبل والفروسية. المصدر: ألويس موسيل.', birthPlace: 'بادية الشام', era: 'العصور الحديثة', latitude: 33.0, longitude: 38.0 });
+    }
+    if (tamimId) {
+        levantTribes.push({ name: 'Al-Majali', nameAr: 'المجالي', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED, generationDepth: 10, parentId: tamimId, childCount: 0, biography: 'One of the most prominent political families and tribes in Jordan, based in Karak. Trace their lineage to Banu Tamim. Source: Frederick Peake.', biographyAr: 'من أبرز العائلات والقبائل السياسية في الأردن، ومقرها الكرك. يرجع نسبهم إلى بني تميم. المصدر: فريدريك بيك.', birthPlace: 'الكرك، الأردن', era: 'العصور الحديثة', latitude: 31.18, longitude: 35.70 });
+    }
+    if (hashim.id) {
+        levantTribes.push({ name: 'Bani Hassan', nameAr: 'بني حسن', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED, generationDepth: 20, parentId: hashim.id, childCount: 0, biography: 'Often called the "Million-Man Tribe" in Jordan. They claim Ashraf (Hashemite) descent. Centered in Zarqa and Mafraq.', biographyAr: 'تُعرف باسم "قبيلة المليون" في الأردن. ينسبون أنفسهم للأشراف بني هاشم. يتركزون في الزرقاء والمفرق.', birthPlace: 'شمال الأردن', era: 'العصور الحديثة', latitude: 32.25, longitude: 36.0 });
+        levantTribes.push({ name: 'Al-Baggara', nameAr: 'البقارة', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED, generationDepth: 20, parentId: hashim.id, childCount: 0, biography: 'A major Syrian tribe along the Euphrates. Claim descent from Imam Muhammad al-Baqir. Source: Syrian tribal genealogies.', biographyAr: 'قبيلة سورية كبرى على طول نهر الفرات. ينسبون أنفسهم للإمام محمد الباقر. المصدر: أنساب القبائل السورية.', birthPlace: 'دير الزور، سوريا', era: 'العصور الحديثة', latitude: 35.33, longitude: 40.14 });
+    }
+    if (qudaaId) {
+        levantTribes.push({ name: 'Al-Huwaitat', nameAr: 'الحويطات', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED, generationDepth: 10, parentId: qudaaId, childCount: 0, biography: 'A large tribe in southern Jordan and Tabuk. Played a major role in the Great Arab Revolt with Auda Abu Tayi.', biographyAr: 'قبيلة كبيرة في جنوب الأردن وتبوك. لعبت دوراً كبيراً في الثورة العربية الكبرى مع عودة أبو تايه.', birthPlace: 'جنوب الأردن', era: 'العصور الحديثة', latitude: 29.8, longitude: 35.3 });
+    }
+    if (madhhijId) {
+        levantTribes.push({ name: 'Al-Aqidat', nameAr: 'العقيدات', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED, generationDepth: 10, parentId: madhhijId, childCount: 0, biography: 'The largest tribe in the Syrian Euphrates valley, tracing their lineage to Zubayd from Madhhij. Source: Max von Oppenheim.', biographyAr: 'أكبر قبيلة في وادي الفرات السوري، ويرجع نسبهم إلى زبيد من مذحج. المصدر: ماكس فون أوبنهايم.', birthPlace: 'دير الزور، سوريا', era: 'العصور الحديثة', latitude: 35.0, longitude: 40.4 });
+    }
+    if (qaysAylan.id) {
+        levantTribes.push({ name: 'Al-Adwan', nameAr: 'العدوان', type: NodeType.TRIBE, status: NodeStatus.PUBLISHED, generationDepth: 9, parentId: qaysAylan.id, childCount: 0, biography: 'A dominant tribe in the Balqa region of Jordan. They ruled the Jordan Valley for centuries before the modern state.', biographyAr: 'قبيلة مهيمنة في منطقة البلقاء بالأردن. حكموا غور الأردن لقرون قبل الدولة الحديثة.', birthPlace: 'البلقاء، الأردن', era: 'العصور الحديثة', latitude: 31.8, longitude: 35.8 });
+    }
+
+    if (levantTribes.length > 0) {
+        await prisma.lineageNode.createMany({
+            data: levantTribes
+        });
+    }
 
     console.log('✅ Created all lineage nodes')
 

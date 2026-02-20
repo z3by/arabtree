@@ -158,6 +158,8 @@ function LineageTreeInner() {
                         birthYear: node.birthYear,
                         deathYear: node.deathYear,
                         childCount: node.childCount,
+                        isDirectAncestor: node.isDirectAncestor,
+                        isConfirmed: node.isConfirmed,
                         expanded: true,
                         onToggle: handleToggle,
                     },
