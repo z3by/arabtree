@@ -22,6 +22,7 @@ import { LineageNode } from '@prisma/client'
 import NodeCard from './NodeCard'
 import { getLineageNodes } from '@/lib/api/lineage'
 import { toast } from 'sonner'
+import * as Sentry from '@sentry/nextjs'
 
 const nodeTypes = {
     custom: NodeCard,
@@ -194,7 +195,6 @@ function LineageTreeInner() {
                 const msg = error instanceof Error ? error.message : 'Unknown error'
                 toast.error(`Failed to load lineage tree: ${msg}`)
                 console.error(error)
-                const Sentry = require('@sentry/nextjs')
                 Sentry.captureException(error, {
                     tags: { component: 'LineageTree', action: 'initial-load' }
                 })

@@ -5,6 +5,7 @@ import { auth } from '@/lib/auth'
 import { hasRole } from '@/lib/rbac'
 import { createLineageNodeSchema, NODE_TYPE_ORDER } from '@/lib/validations/lineage'
 import { z } from 'zod'
+import * as Sentry from '@sentry/nextjs'
 
 export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams
@@ -52,7 +53,6 @@ export async function GET(request: NextRequest) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error'
         const errorType = error instanceof Error ? error.constructor.name : typeof error
         // Ensure Sentry captures this error with context
-        const Sentry = require('@sentry/nextjs')
         Sentry.captureException(error, {
             tags: {
                 api: 'lineage',

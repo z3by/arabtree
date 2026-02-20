@@ -5,6 +5,7 @@ import { auth } from '@/lib/auth'
 import { hasRole } from '@/lib/rbac'
 import { updateLineageNodeSchema } from '@/lib/validations/lineage'
 import { z } from 'zod'
+import * as Sentry from '@sentry/nextjs'
 
 /**
  * GET /api/lineage/:id
@@ -71,7 +72,6 @@ export async function GET(
         })
     } catch (error) {
         console.error('Error fetching lineage node:', error)
-        const Sentry = require('@sentry/nextjs')
         Sentry.captureException(error, {
             tags: { api: 'lineage-detail', method: 'GET' },
             extra: { id, subtreeDepth }
@@ -141,7 +141,6 @@ export async function PUT(
             return NextResponse.json({ error: error.issues }, { status: 400 })
         }
         console.error('Error updating lineage node:', error)
-        const Sentry = require('@sentry/nextjs')
         Sentry.captureException(error, {
             tags: { api: 'lineage-detail', method: 'PUT' },
             extra: { id }
@@ -233,7 +232,6 @@ export async function DELETE(
         return NextResponse.json({ message: 'Node archived successfully' })
     } catch (error) {
         console.error('Error archiving lineage node:', error)
-        const Sentry = require('@sentry/nextjs')
         Sentry.captureException(error, {
             tags: { api: 'lineage-detail', method: 'DELETE' },
             extra: { id }

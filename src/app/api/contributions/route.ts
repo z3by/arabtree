@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
-import { Prisma } from '@prisma/client'
+import { Prisma, ContributionType } from '@prisma/client'
 import { contributionSchema } from '@/lib/validations/contribution'
 import { auth } from '@/lib/auth'
 import { hasRole } from '@/lib/rbac'
@@ -123,10 +123,10 @@ export async function POST(request: NextRequest) {
 
         const contribution = await prisma.contribution.create({
             data: {
-                type: type as any,
+                type: type as ContributionType,
                 nodeId: targetNodeId,
                 authorId: session.user.id,
-                payload: payload as any,
+                payload: payload as Prisma.InputJsonValue,
                 summary,
                 status: 'PENDING',
                 submittedAt: new Date(),

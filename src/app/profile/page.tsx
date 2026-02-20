@@ -150,7 +150,7 @@ export default async function ProfilePage() {
                     <FileText className="w-5 h-5" />
                     مساهماتك
                 </h2>
-                <ContributionList contributions={contributions as any} />
+                <ContributionList contributions={contributions as unknown as Parameters<typeof ContributionList>[0]['contributions']} />
             </section>
         </div>
     )
