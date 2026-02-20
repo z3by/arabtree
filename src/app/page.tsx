@@ -1,4 +1,3 @@
-import { Footer } from "@/components/layout/Footer"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import Image from "next/image"
@@ -53,6 +52,7 @@ export default function Home() {
                 className="object-cover object-center"
                 priority
               />
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/20 to-background" />
             </div>
 
             <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-primary/10 rounded-full blur-3xl opacity-40 mix-blend-multiply dark:bg-primary/20 dark:opacity-60 dark:mix-blend-screen animate-orb-1" />
@@ -65,7 +65,7 @@ export default function Home() {
           <div className="container flex max-w-[64rem] flex-col items-center gap-8 text-center px-4 relative z-10">
             {/* Premium Icon/Logo */}
             <div className="animate-grow-tree mb-2">
-              <div className="relative flex h-20 w-20 md:h-24 md:w-24 items-center justify-center rounded-3xl glass shadow-xl shadow-primary/20 border-white/60 dark:border-white/10 group overflow-hidden">
+              <div className="relative flex h-20 w-20 md:h-24 md:w-24 items-center justify-center rounded-3xl glass shadow-xl shadow-primary/20 border-white/60 dark:border-white/10 group overflow-hidden hover:scale-105 transition-transform duration-500">
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent group-hover:scale-110 transition-transform duration-500" />
                 <TreePine className="w-10 h-10 md:w-12 md:h-12 text-primary" />
               </div>
@@ -75,7 +75,7 @@ export default function Home() {
               <h1 className="animate-fade-in-up font-heading text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tight pb-2 leading-[1.1] md:leading-tight">
                 <span className="text-foreground drop-shadow-sm">شجرة الأنساب</span> <span className="text-primary block sm:inline mt-2 sm:mt-0 animate-text-shimmer bg-clip-text text-transparent bg-[linear-gradient(110deg,#10b981,45%,#34d399,55%,#10b981)] drop-shadow-sm">العربية</span>
               </h1>
-              <p className="animate-fade-in-up stagger-1 max-w-[46rem] mx-auto leading-relaxed text-muted-foreground/90 text-lg sm:text-xl font-medium">
+              <p className="animate-fade-in-up stagger-1 max-w-[46rem] mx-auto leading-relaxed text-muted-foreground text-lg sm:text-xl font-medium">
                 منصة رقمية لتوثيق الأنساب العربية، تربط الأجيال الحديثة بجذورها القبلية العريقة باستخدام أحدث التقنيات وواجهة عصرية.
               </p>
             </div>
@@ -84,7 +84,7 @@ export default function Home() {
             <div className="animate-fade-in-up stagger-2 w-full max-w-2xl mt-4">
               <form action="/search" method="GET" className="relative group flex items-center">
                 <div className="absolute inset-0 bg-primary/5 rounded-full blur-xl group-hover:bg-primary/10 transition-colors duration-500" />
-                <div className="relative flex items-center w-full glass rounded-full shadow-lg border-white/60 dark:border-white/10 hover:shadow-primary/10 transition-shadow">
+                <div className="relative flex items-center w-full glass rounded-full shadow-lg border-white/60 dark:border-white/10 hover:shadow-primary/10 transition-all duration-300 focus-within:ring-4 focus-within:ring-primary/20 focus-within:border-primary/50">
                   <Search className="absolute right-5 w-6 h-6 text-muted-foreground group-focus-within:text-primary transition-colors" />
                   <input
                     name="q"
@@ -106,16 +106,16 @@ export default function Home() {
             <div className="animate-fade-in-up stagger-3 flex flex-wrap gap-4 justify-center items-center mt-2 text-sm font-medium text-muted-foreground/80">
               <span className="hidden sm:inline">عمليات بحث شائعة:</span>
               <div className="flex gap-3">
-                <Link href="/search?q=عدنان" className="hover:text-primary transition-colors hover:underline">عدنان</Link>
-                <Link href="/search?q=قحطان" className="hover:text-primary transition-colors hover:underline">قحطان</Link>
-                <Link href="/search?q=قريش" className="hover:text-primary transition-colors hover:underline">قريش</Link>
+                <Link href="/search?q=عدنان" className="hover:text-primary transition-colors hover:underline decoration-primary/30 underline-offset-4">عدنان</Link>
+                <Link href="/search?q=قحطان" className="hover:text-primary transition-colors hover:underline decoration-primary/30 underline-offset-4">قحطان</Link>
+                <Link href="/search?q=قريش" className="hover:text-primary transition-colors hover:underline decoration-primary/30 underline-offset-4">قريش</Link>
               </div>
             </div>
 
-            <div className="animate-fade-in-up stagger-4 mt-4">
+            <div className="animate-fade-in-up stagger-4 mt-8">
               <Link href="/tree">
-                <Button variant="outline" className="rounded-full px-6 h-10 border-primary/20 hover:border-primary hover:bg-primary/5 transition-all text-sm group">
-                  <Globe className="w-4 h-4 ml-2 text-primary group-hover:animate-pulse" />
+                <Button variant="outline" className="rounded-full px-8 h-12 border-primary/20 hover:border-primary hover:bg-primary/5 transition-all text-base font-medium group backdrop-blur-sm bg-background/30">
+                  <Globe className="w-5 h-5 ml-2 text-primary group-hover:animate-pulse" />
                   أو تصفح الشجرة الكاملة
                 </Button>
               </Link>
@@ -129,11 +129,11 @@ export default function Home() {
             {stats.map((stat, i) => (
               <div
                 key={stat.label}
-                className={`animate-fade-in-up stagger-${i + 2} flex flex-col items-center justify-center gap-3 p-8 bento-card text-center`}
+                className={`animate-fade-in-up stagger-${i + 2} flex flex-col items-center justify-center gap-3 p-8 bento-card text-center hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border border-border/50`}
               >
                 <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 to-emerald-400/20 rounded-3xl blur opacity-0 group-hover:opacity-100 transition duration-500 group-hover:duration-200" />
-                <stat.icon className="w-8 h-8 text-primary mb-2 group-hover:scale-125 group-hover:rotate-12 transition-transform duration-500 relative z-10" />
+                <stat.icon className="w-10 h-10 text-primary mb-2 group-hover:scale-125 group-hover:rotate-12 transition-transform duration-500 relative z-10" />
                 <div className="space-y-1 relative z-10">
                   <h4 className="text-4xl md:text-5xl font-black text-foreground">{stat.value}</h4>
                   <p className="text-sm font-semibold text-primary uppercase tracking-wider">{stat.label}</p>
@@ -154,7 +154,7 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 auto-rows-[280px] md:auto-rows-[320px]">
             {/* Feature 1 - Large Bento Box */}
-            <div className="md:col-span-2 md:row-span-2 bento-card p-0 flex flex-col justify-end text-right overflow-hidden group border-none ring-1 ring-border/50">
+            <div className="md:col-span-2 md:row-span-2 bento-card p-0 flex flex-col justify-end text-right overflow-hidden group border-none ring-1 ring-border/50 hover:shadow-2xl transition-all duration-500">
               {/* Background Map Image */}
               <div className="absolute inset-0 -z-20">
                 <Image
@@ -163,7 +163,7 @@ export default function Home() {
                   fill
                   className="object-cover object-center opacity-90 group-hover:scale-105 group-hover:opacity-100 transition-all duration-700"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/60 to-transparent opacity-90 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/80 to-transparent opacity-90 group-hover:opacity-100 transition-opacity duration-500" />
               </div>
 
               <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/20 rounded-full blur-3xl -z-10 group-hover:bg-emerald-500/40 transition-colors duration-500" />
@@ -178,7 +178,7 @@ export default function Home() {
             </div>
 
             {/* Feature 2 - Small Bento Box */}
-            <div className="md:col-span-2 bento-card p-0 flex flex-col justify-end text-right overflow-hidden group border-none ring-1 ring-border/50">
+            <div className="md:col-span-2 bento-card p-0 flex flex-col justify-end text-right overflow-hidden group border-none ring-1 ring-border/50 hover:shadow-2xl transition-all duration-500">
               {/* Background Globe Image */}
               <div className="absolute inset-0 -z-20">
                 <Image
@@ -187,7 +187,7 @@ export default function Home() {
                   fill
                   className="object-cover object-center opacity-90 group-hover:scale-105 group-hover:opacity-100 transition-all duration-700"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/60 to-transparent opacity-90 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/80 to-transparent opacity-90 group-hover:opacity-100 transition-opacity duration-500" />
               </div>
 
               <div className="absolute top-0 left-0 w-32 h-32 bg-blue-500/20 rounded-full blur-2xl -z-10 group-hover:bg-blue-500/40 transition-colors duration-500" />
@@ -202,7 +202,7 @@ export default function Home() {
             </div>
 
             {/* Feature 3 - Small Bento Box */}
-            <div className="md:col-span-2 bento-card p-0 flex flex-col justify-end text-right overflow-hidden group border-none ring-1 ring-border/50">
+            <div className="md:col-span-2 bento-card p-0 flex flex-col justify-end text-right overflow-hidden group border-none ring-1 ring-border/50 hover:shadow-2xl transition-all duration-500">
               {/* Background Fiber Optic Image */}
               <div className="absolute inset-0 -z-20">
                 <Image
@@ -211,7 +211,7 @@ export default function Home() {
                   fill
                   className="object-cover object-center opacity-90 group-hover:scale-105 group-hover:opacity-100 transition-all duration-700"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/60 to-transparent opacity-90 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/80 to-transparent opacity-90 group-hover:opacity-100 transition-opacity duration-500" />
               </div>
 
               <div className="absolute bottom-0 right-0 w-32 h-32 bg-amber-500/20 rounded-full blur-2xl -z-10 group-hover:bg-amber-500/40 transition-colors duration-500" />
@@ -229,7 +229,7 @@ export default function Home() {
 
         {/* ── CTA Section ── */}
         <section className="container max-w-4xl px-4 mb-16 relative z-10">
-          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary via-emerald-700 to-green-900 group p-10 md:p-14 text-center shadow-2xl shadow-primary/20 text-primary-foreground border-white/10 glass-card">
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary via-emerald-700 to-green-900 group p-10 md:p-14 text-center shadow-2xl shadow-primary/20 text-primary-foreground border-white/10 glass-card hover:scale-[1.01] transition-transform duration-500">
             <div className="absolute inset-0 -z-10 bg-[url('/noise.png')] opacity-20 mix-blend-overlay" />
 
             {/* Community Nodes Image Overlay */}
@@ -243,7 +243,7 @@ export default function Home() {
             </div>
 
             <div className="absolute inset-0 -z-10">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 blur-3xl rounded-full" />
+              <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 blur-3xl rounded-full animate-pulse" />
               <div className="absolute bottom-0 left-0 w-48 h-48 bg-black/10 blur-3xl rounded-full" />
             </div>
 
@@ -260,7 +260,6 @@ export default function Home() {
           </div>
         </section>
       </main>
-      <Footer />
     </div>
   )
 }

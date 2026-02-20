@@ -27,7 +27,7 @@ export function Header() {
 
     return (
         <>
-            <header className="sticky top-0 z-50 w-full bg-transparent dark:bg-background/80 backdrop-blur-xl border-b border-border/40">
+            <header className="sticky top-0 z-50 w-full bg-background/60 dark:bg-background/40 backdrop-blur-xl backdrop-saturate-150 border-b border-border/40 supports-[backdrop-filter]:bg-background/60">
                 <div className="container flex h-16 items-center justify-between px-4 md:px-6">
                     <div className="flex items-center gap-4">
                         <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
@@ -35,92 +35,86 @@ export function Header() {
                             <span className="sr-only">القائمة</span>
                         </Button>
                         <Link href="/" className="flex items-center gap-2 font-bold text-xl group">
-                            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary text-xl group-hover:scale-110 transition-transform">🌴</span>
-                            <span className="hidden sm:inline-block font-heading tracking-tight">ArabTree</span>
+                            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary text-xl group-hover:scale-110 transition-transform duration-300 shadow-sm shadow-primary/20">🌴</span>
+                            <span className="hidden sm:inline-block font-heading tracking-tight text-foreground">ArabTree</span>
                         </Link>
                     </div>
 
-                    <nav className="hidden md:flex items-center gap-1">
+                    <nav className="hidden md:flex items-center gap-1.5">
                         {navLinks.map((link) => (
                             <Link
                                 key={link.href}
                                 href={link.href}
-                                className={`relative text-sm font-medium px-3 py-2 rounded-lg transition-all flex items-center gap-1.5 ${isActiveRoute(link.href)
-                                    ? "text-primary bg-primary/5"
+                                className={`relative text-sm font-medium px-4 py-2 rounded-full transition-all duration-300 flex items-center gap-2 group ${isActiveRoute(link.href)
+                                    ? "text-primary bg-primary/10 shadow-sm shadow-primary/10"
                                     : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                                     }`}
                             >
-                                {link.icon && <link.icon className="w-3.5 h-3.5" />}
+                                {link.icon && <link.icon className="w-4 h-4 transition-transform group-hover:scale-110 duration-300" />}
                                 {link.label}
-                                {isActiveRoute(link.href) && (
-                                    <span className="absolute -bottom-[1px] left-2 right-2 h-0.5 bg-primary rounded-full" />
-                                )}
                             </Link>
                         ))}
                     </nav>
 
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-2">
                         <Button
                             variant="ghost"
                             size="icon"
                             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                            className="rounded-full w-9 h-9"
+                            className="rounded-full w-9 h-9 hover:bg-muted/80 transition-colors"
                         >
-                            <Sun className="h-4 w-4 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                            <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                            <Sun className="h-4 w-4 scale-100 transition-all duration-300 dark:-rotate-90 dark:scale-0" />
+                            <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all duration-300 dark:rotate-0 dark:scale-100" />
                             <span className="sr-only">تبديل السمة</span>
                         </Button>
 
                         {session ? (
-                            <div className="flex items-center gap-1.5">
+                            <div className="flex items-center gap-2">
                                 <NotificationBell />
-                                <Link href="/profile" className="hidden lg:flex items-center gap-2 text-sm text-muted-foreground mr-1 hover:text-primary transition-colors px-2 py-1 rounded-lg hover:bg-muted/50">
+                                <Link href="/profile" className="hidden lg:flex items-center gap-2 text-sm text-muted-foreground mr-1 hover:text-primary transition-colors px-3 py-1.5 rounded-full hover:bg-muted/50 font-medium">
                                     {session.user?.name}
                                 </Link>
-                                <Button variant="ghost" size="icon" onClick={() => signOut()} title="تسجيل خروج" className="rounded-full w-9 h-9">
+                                <Button variant="ghost" size="icon" onClick={() => signOut()} title="تسجيل خروج" className="rounded-full w-9 h-9 hover:bg-destructive/10 hover:text-destructive transition-colors">
                                     <LogOut className="h-4 w-4" />
                                 </Button>
                             </div>
                         ) : (
                             <Link href="/login">
-                                <Button size="sm" className="rounded-full px-6">
+                                <Button size="sm" className="rounded-full px-6 shadow-md shadow-primary/20 hover:shadow-primary/30 transition-all hover:translate-y-[-1px]">
                                     تسجيل دخول
                                 </Button>
                             </Link>
                         )}
                     </div>
                 </div>
-
-                {/* Decorative bottom border */}
-                <div className="h-px bg-gradient-to-l from-transparent via-primary/20 to-transparent" />
             </header>
 
             {/* Mobile Menu Overlay */}
-            {isMenuOpen && (
-                <>
-                    <div className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm md:hidden" onClick={() => setIsMenuOpen(false)} />
-                    <div className="fixed top-16 right-0 left-0 z-40 md:hidden">
-                        <div className="mx-4 mt-2 rounded-xl glass shadow-lg overflow-hidden animate-fade-in-up">
-                            <nav className="flex flex-col p-2">
-                                {navLinks.map((link) => (
-                                    <Link
-                                        key={link.href}
-                                        href={link.href}
-                                        className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${isActiveRoute(link.href)
-                                            ? "bg-primary/10 text-primary font-semibold"
-                                            : "hover:bg-muted text-foreground"
-                                            }`}
-                                        onClick={() => setIsMenuOpen(false)}
-                                    >
-                                        {link.icon && <link.icon className="w-4 h-4" />}
-                                        {link.label}
-                                    </Link>
-                                ))}
-                            </nav>
-                        </div>
-                    </div>
-                </>
-            )}
+            <div
+                className={`fixed inset-0 z-40 bg-black/20 backdrop-blur-sm md:hidden transition-opacity duration-300 ${isMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
+                onClick={() => setIsMenuOpen(false)}
+            />
+
+            <div className={`fixed top-16 right-0 left-0 z-40 md:hidden transition-all duration-300 transform ${isMenuOpen ? "translate-y-0 opacity-100" : "-translate-y-4 opacity-0 pointer-events-none"}`}>
+                <div className="mx-4 mt-2 rounded-2xl glass shadow-xl overflow-hidden border border-white/20 dark:border-white/10 bg-background/80 backdrop-blur-2xl">
+                    <nav className="flex flex-col p-2 gap-1">
+                        {navLinks.map((link) => (
+                            <Link
+                                key={link.href}
+                                href={link.href}
+                                className={`flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all active:scale-[0.98] ${isActiveRoute(link.href)
+                                    ? "bg-primary/10 text-primary font-bold shadow-sm"
+                                    : "hover:bg-muted/50 text-foreground font-medium"
+                                    }`}
+                                onClick={() => setIsMenuOpen(false)}
+                            >
+                                {link.icon && <link.icon className="w-5 h-5" />}
+                                {link.label}
+                            </Link>
+                        ))}
+                    </nav>
+                </div>
+            </div>
         </>
     )
 }
