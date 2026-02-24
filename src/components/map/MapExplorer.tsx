@@ -4,6 +4,11 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
+import {
+    NODE_TYPE_LABELS_AR,
+    NODE_TYPE_HEX,
+    EVENT_TYPE_LABELS_AR
+} from '@/lib/constants'
 
 // ── Types ──
 interface MapNode {
@@ -42,21 +47,9 @@ interface MapEvent {
 }
 
 // ── Marker colors by node type ──
-const NODE_COLORS: Record<string, string> = {
-    ROOT: '#d97706',       // amber/gold
-    TRIBE: '#16a34a',      // green
-    CLAN: '#2563eb',       // blue
-    FAMILY: '#7c3aed',     // violet
-    INDIVIDUAL: '#dc2626', // red
-}
+const NODE_COLORS = NODE_TYPE_HEX
 
-const NODE_TYPE_AR: Record<string, string> = {
-    ROOT: 'جذر',
-    TRIBE: 'قبيلة',
-    CLAN: 'عشيرة',
-    FAMILY: 'عائلة',
-    INDIVIDUAL: 'فرد',
-}
+const NODE_TYPE_AR = NODE_TYPE_LABELS_AR
 
 // ── Event icons by type ──
 const EVENT_ICONS: Record<string, string> = {
@@ -69,15 +62,7 @@ const EVENT_ICONS: Record<string, string> = {
     OTHER: '📍',
 }
 
-const EVENT_TYPE_AR: Record<string, string> = {
-    MIGRATION: 'هجرة',
-    BATTLE: 'معركة',
-    FOUNDING: 'تأسيس',
-    ALLIANCE: 'تحالف',
-    GENEALOGICAL: 'أنساب',
-    CULTURAL: 'ثقافة',
-    OTHER: 'أخرى',
-}
+const EVENT_TYPE_AR = EVENT_TYPE_LABELS_AR
 
 // ── Create custom marker icons ──
 function createNodeIcon(type: string) {

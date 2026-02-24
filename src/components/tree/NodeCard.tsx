@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { ChevronDown, ChevronRight, Info } from 'lucide-react'
 import Link from 'next/link'
+import { NODE_TYPE_COLORS, NODE_TYPE_LABELS_AR } from '@/lib/constants'
 
 interface NodeData {
     id?: string
@@ -21,21 +22,9 @@ interface NodeData {
     onToggle?: (nodeId: string) => void
 }
 
-const typeColors: Record<string, { badge: string; ring: string }> = {
-    ROOT: { badge: 'bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900/40 dark:text-amber-300 dark:border-amber-700', ring: 'ring-amber-400/50' },
-    TRIBE: { badge: 'bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-300 dark:border-emerald-700', ring: 'ring-emerald-400/50' },
-    CLAN: { badge: 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/40 dark:text-blue-300 dark:border-blue-700', ring: 'ring-blue-400/50' },
-    FAMILY: { badge: 'bg-purple-100 text-purple-800 border-purple-200 dark:bg-purple-900/40 dark:text-purple-300 dark:border-purple-700', ring: 'ring-purple-400/50' },
-    INDIVIDUAL: { badge: 'bg-rose-100 text-rose-800 border-rose-200 dark:bg-rose-900/40 dark:text-rose-300 dark:border-rose-700', ring: 'ring-rose-400/50' },
-}
+const typeColors = NODE_TYPE_COLORS
 
-const typeTranslations: Record<string, string> = {
-    ROOT: 'جذر',
-    TRIBE: 'قبيلة',
-    CLAN: 'عشيرة',
-    FAMILY: 'عائلة',
-    INDIVIDUAL: 'فرد',
-}
+const typeTranslations = NODE_TYPE_LABELS_AR
 
 const NodeCard = ({ id, data }: { id: string; data: NodeData }) => {
     const nodeId = data.id || id

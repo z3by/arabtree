@@ -9,6 +9,7 @@ import {
     Users, TreePine, FileText, Clock,
     Loader2, Shield, AlertTriangle, Search, RefreshCw
 } from 'lucide-react'
+import { NODE_TYPE_LABELS_AR } from '@/lib/constants'
 
 // ── Types ──
 interface Stats {
@@ -45,9 +46,7 @@ const roleLabels: Record<string, { ar: string; color: string }> = {
     ADMIN: { ar: 'مدير', color: 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300' },
 }
 
-const typeLabelsAr: Record<string, string> = {
-    ROOT: 'جذر', TRIBE: 'قبيلة', CLAN: 'عشيرة', FAMILY: 'عائلة', INDIVIDUAL: 'فرد',
-}
+const typeLabelsAr = NODE_TYPE_LABELS_AR
 
 const statusLabelsAr: Record<string, string> = {
     PENDING: 'قيد المراجعة', APPROVED: 'مقبول', REJECTED: 'مرفوض', DRAFT: 'مسودة', WITHDRAWN: 'مسحوب',

@@ -20,6 +20,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { Check, ChevronLeft, ChevronRight, Loader2, Send } from 'lucide-react'
+import { NODE_TYPE_LABELS } from '@/lib/constants'
 
 // ── Step definitions ──
 const STEPS = [
@@ -34,13 +35,7 @@ const contributionTypeLabels: Record<string, { ar: string; en: string; desc: str
     ADD_EVENT: { ar: 'إضافة حدث تاريخي', en: 'Add Historical Event', desc: 'وثّق حدثاً تاريخياً مرتبطاً بالنسب' },
 }
 
-const nodeTypeLabels: Record<string, { ar: string; en: string }> = {
-    ROOT: { ar: 'جذر', en: 'Root' },
-    TRIBE: { ar: 'قبيلة', en: 'Tribe' },
-    CLAN: { ar: 'عشيرة / بطن', en: 'Clan' },
-    FAMILY: { ar: 'عائلة / فخذ', en: 'Family' },
-    INDIVIDUAL: { ar: 'فرد', en: 'Individual' },
-}
+const nodeTypeLabels = NODE_TYPE_LABELS
 
 export function ContributionForm() {
     const router = useRouter()

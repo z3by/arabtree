@@ -14,23 +14,12 @@ import {
     Crown,
     BookOpen,
 } from 'lucide-react'
+import { NODE_TYPE_COLORS, NODE_TYPE_LABELS_AR } from '@/lib/constants'
 
 // ── Type colors for badges ──
-const typeColors: Record<string, string> = {
-    ROOT: 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300 border-amber-300 dark:border-amber-700',
-    TRIBE: 'bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300 border-blue-300 dark:border-blue-700',
-    CLAN: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700',
-    FAMILY: 'bg-teal-100 text-teal-800 dark:bg-teal-900/40 dark:text-teal-300 border-teal-300 dark:border-teal-700',
-    INDIVIDUAL: 'bg-slate-100 text-slate-800 dark:bg-slate-900/40 dark:text-slate-300 border-slate-300 dark:border-slate-700',
-}
+const typeColors = NODE_TYPE_COLORS
 
-const typeLabels: Record<string, string> = {
-    ROOT: 'جذر',
-    TRIBE: 'قبيلة',
-    CLAN: 'عشيرة',
-    FAMILY: 'عائلة',
-    INDIVIDUAL: 'فرد',
-}
+const typeLabels = NODE_TYPE_LABELS_AR
 
 // ── Recursive ancestor path builder ──
 async function getAncestorPath(parentId: string | null) {
@@ -141,7 +130,7 @@ export default async function NodeDetailPage({
             {/* ── Node Header ── */}
             <header className="space-y-4">
                 <div className="flex flex-wrap items-center gap-3">
-                    <Badge className={`${typeColors[node.type] || ''} border text-xs px-3 py-1`}>
+                    <Badge className={`${typeColors[node.type]?.badge || ''} border text-xs px-3 py-1`}>
                         {typeLabels[node.type] || node.type}
                     </Badge>
                     {node.era && (
@@ -247,7 +236,7 @@ export default async function NodeDetailPage({
                                 <Card className="h-full hover:bg-muted/50 transition-all cursor-pointer border hover:border-primary/30 hover:shadow-md group">
                                     <CardHeader className="p-4 pb-2">
                                         <div className="flex justify-between items-start">
-                                            <Badge className={`${typeColors[child.type] || ''} border text-[10px] px-2 py-0`}>
+                                            <Badge className={`${typeColors[child.type]?.badge || ''} border text-[10px] px-2 py-0`}>
                                                 {typeLabels[child.type] || child.type}
                                             </Badge>
                                             {child.childCount > 0 && (

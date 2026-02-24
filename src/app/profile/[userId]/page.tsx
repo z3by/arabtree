@@ -8,6 +8,7 @@ import {
     Star, Award, Shield, User, TreePine,
     Calendar, CheckCircle2, XCircle, Clock, FileText,
 } from 'lucide-react'
+import { NODE_TYPE_COLORS, NODE_TYPE_LABELS_AR } from '@/lib/constants'
 
 // ── Role labels ──
 const roleLabels: Record<string, { ar: string; color: string }> = {
@@ -17,21 +18,9 @@ const roleLabels: Record<string, { ar: string; color: string }> = {
     ADMIN: { ar: 'مدير', color: 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300' },
 }
 
-const typeLabels: Record<string, string> = {
-    ROOT: 'جذر',
-    TRIBE: 'قبيلة',
-    CLAN: 'عشيرة',
-    FAMILY: 'عائلة',
-    INDIVIDUAL: 'فرد',
-}
+const typeLabels = NODE_TYPE_LABELS_AR
 
-const typeColors: Record<string, string> = {
-    ROOT: 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300 border-amber-300 dark:border-amber-700',
-    TRIBE: 'bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300 border-blue-300 dark:border-blue-700',
-    CLAN: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700',
-    FAMILY: 'bg-teal-100 text-teal-800 dark:bg-teal-900/40 dark:text-teal-300 border-teal-300 dark:border-teal-700',
-    INDIVIDUAL: 'bg-slate-100 text-slate-800 dark:bg-slate-900/40 dark:text-slate-300 border-slate-300 dark:border-slate-700',
-}
+const typeColors = NODE_TYPE_COLORS
 
 const contributionTypeLabels: Record<string, string> = {
     ADD_NODE: 'إضافة',
@@ -193,7 +182,7 @@ export default async function PublicProfilePage({
                         {verifiedTribes.map((tribe) => (
                             <Link href={`/tree/${tribe.id}`} key={tribe.id}>
                                 <Badge
-                                    className={`${typeColors[tribe.type] || ''} border text-xs px-3 py-1.5 cursor-pointer hover:opacity-80 transition-opacity`}
+                                    className={`${typeColors[tribe.type]?.badge || ''} border text-xs px-3 py-1.5 cursor-pointer hover:opacity-80 transition-opacity`}
                                 >
                                     {typeLabels[tribe.type] ? `${typeLabels[tribe.type]}: ` : ''}
                                     {tribe.nameAr}
