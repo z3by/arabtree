@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import bcrypt from 'bcryptjs'
 import { z } from 'zod'
+import { rateLimit } from '@/lib/rate-limit'
 
 const registerSchema = z.object({
     name: z.string().min(2, 'الاسم يجب أن يكون حرفين على الأقل').max(100),
@@ -15,6 +16,29 @@ const registerSchema = z.object({
  */
 export async function POST(request: NextRequest) {
     try {
+        // Apply rate limiting
+        const forwarded = request.headers.get('x-forwarded-for')
+        const ip = request.ip || (forwarded ? forwarded.split(',')[0].trim() : '127.0.0.1')
+
+        const limitResult = await rateLimit(`registration_${ip}`, {
+            limit: 5,
+            windowMs: 15 * 60 * 1000, // 15 minutes
+        })
+
+        if (!limitResult.success) {
+            return NextResponse.json(
+                { error: 'لقد تجاوزت عدد محاولات التسجيل المسموح بها. يرجى المحاولة لاحقاً.' },
+                {
+                    status: 429,
+                    headers: {
+                        'X-RateLimit-Limit': limitResult.limit.toString(),
+                        'X-RateLimit-Remaining': limitResult.remaining.toString(),
+                        'X-RateLimit-Reset': limitResult.reset.toString(),
+                    }
+                }
+            )
+        }
+
         const body = await request.json()
         const validated = registerSchema.parse(body)
 
@@ -50,7 +74,14 @@ export async function POST(request: NextRequest) {
             },
         })
 
-        return NextResponse.json(user, { status: 201 })
+        return NextResponse.json(user, {
+            status: 201,
+            headers: {
+                'X-RateLimit-Limit': limitResult.limit.toString(),
+                'X-RateLimit-Remaining': limitResult.remaining.toString(),
+                'X-RateLimit-Reset': limitResult.reset.toString(),
+            }
+        })
     } catch (error) {
         if (error instanceof z.ZodError) {
             return NextResponse.json(
