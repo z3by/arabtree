@@ -25,10 +25,10 @@ async function getRoute() {
     return import('@/app/api/auth/register/route')
 }
 
-function createRequest(body: Record<string, unknown>) {
+function createRequest(body: Record<string, unknown>, headers: Record<string, string> = {}) {
     return new NextRequest('http://localhost:3000/api/auth/register', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...headers },
         body: JSON.stringify(body),
     })
 }
@@ -149,5 +149,34 @@ describe('POST /api/auth/register', () => {
         const request = createRequest({ name: 'A', email: 'test@example.com', password: '123456' })
         const response = await POST(request)
         expect(response.status).toBe(400)
+    })
+
+    it('returns 429 when rate limit is exceeded', async () => {
+        mockFindUnique.mockResolvedValue(null)
+        const { POST } = await getRoute()
+        const testIp = '192.168.1.1'
+        const headers = { 'x-forwarded-for': testIp }
+
+        const payload = {
+            name: 'Test User',
+            email: 'rate@example.com',
+            password: 'securepassword',
+        }
+
+        // Exhaust the limit (5 requests)
+        for (let i = 0; i < 5; i++) {
+            const request = createRequest(payload, headers)
+            const response = await POST(request)
+            expect(response.status).toBe(201)
+        }
+
+        // The 6th call should fail with 429
+        const request = createRequest(payload, headers)
+        const response = await POST(request)
+        expect(response.status).toBe(429)
+
+        const body = await response.json()
+        expect(body.error).toContain('تجاوزت عدد محاولات التسجيل')
+        expect(response.headers.get('X-RateLimit-Remaining')).toBe('0')
     })
 })
