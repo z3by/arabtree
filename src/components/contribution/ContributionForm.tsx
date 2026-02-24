@@ -59,6 +59,7 @@ export function ContributionForm() {
     })
 
     const currentType = form.watch('type')
+    const watchedNodeType = form.watch('nodeType')
 
     async function onSubmit(data: ContributionFormValues) {
         setSubmitting(true)
@@ -374,10 +375,10 @@ export function ContributionForm() {
                                             <div className="font-medium">{form.watch('name')}</div>
                                         </>
                                     )}
-                                    {form.watch('nodeType') && (
+                                    {watchedNodeType && (
                                         <>
                                             <div className="text-muted-foreground">نوع العقدة:</div>
-                                            <div className="font-medium">{nodeTypeLabels[form.watch('nodeType') || '']?.ar}</div>
+                                            <div className="font-medium">{nodeTypeLabels[watchedNodeType]?.ar}</div>
                                         </>
                                     )}
                                     {form.watch('birthYear') && (
