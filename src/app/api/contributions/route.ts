@@ -87,12 +87,15 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
     try {
-        const session = await auth()
+        const [session, body] = await Promise.all([
+            auth(),
+            request.json()
+        ])
+
         if (!session?.user?.id) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
         }
 
-        const body = await request.json()
         const validatedData = contributionSchema.parse(body)
 
         const { type, nodeId, parentId, summary, ...payload } = validatedData
@@ -133,8 +136,8 @@ export async function POST(request: NextRequest) {
             },
         })
 
-        // Audit log
-        await prisma.auditLog.create({
+        // Audit log (non-blocking)
+        prisma.auditLog.create({
             data: {
                 userId: session.user.id,
                 action: 'CREATE',
@@ -142,6 +145,8 @@ export async function POST(request: NextRequest) {
                 entityId: contribution.id,
                 after: contribution as unknown as Prisma.JsonObject,
             },
+        }).catch(error => {
+            console.error('Failed to create audit log:', error)
         })
 
         return NextResponse.json(contribution, { status: 201 })
