@@ -277,6 +277,7 @@ async function applyContribution(contribution: {
 
         // ADD_SOURCE, ADD_EVENT, MERGE_NODES — future implementation
         default:
-            console.log(`Contribution type ${contribution.type} auto-apply not yet implemented`)
+            // TODO: Implement auto-apply for other contribution types (ADD_SOURCE, ADD_EVENT, MERGE_NODES)
+            break
     }
 }
