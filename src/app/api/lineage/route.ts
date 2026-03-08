@@ -69,11 +69,7 @@ export async function GET(request: NextRequest) {
             }
         })
         return NextResponse.json(
-            {
-                error: 'Failed to fetch lineage nodes',
-                type: errorType,
-                detail: process.env.NODE_ENV === 'development' ? errorMessage : undefined,
-            },
+            { error: 'Failed to fetch lineage nodes' },
             { status: 500 }
         )
     }

@@ -99,7 +99,7 @@ describe('GET /api/lineage', () => {
         )
     })
 
-    it('returns 500 with error type when Prisma throws', async () => {
+    it('returns 500 and generic error message when Prisma throws', async () => {
         const prismaError = new Error('Connection refused')
         mockFindMany.mockRejectedValue(prismaError)
 
@@ -109,20 +109,8 @@ describe('GET /api/lineage', () => {
 
         expect(response.status).toBe(500)
         expect(body.error).toBe('Failed to fetch lineage nodes')
-        expect(body.type).toBe('Error')
-    })
-
-    it('includes error type in 500 response for debugging', async () => {
-        const error = new Error('DB connection failed')
-        mockFindMany.mockRejectedValue(error)
-
-        const { GET } = await getRoute()
-        const response = await GET(createRequest({ all: 'true' }))
-        const body = await response.json()
-
-        expect(response.status).toBe(500)
-        expect(body.error).toBe('Failed to fetch lineage nodes')
-        expect(body.type).toBe('Error')
+        expect(body.type).toBeUndefined()
+        expect(body.detail).toBeUndefined()
     })
 
     it('respects limit and skip pagination', async () => {
