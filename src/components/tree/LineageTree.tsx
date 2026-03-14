@@ -139,11 +139,9 @@ function LineageTreeInner() {
     // Initial fetch for ALL nodes — build full tree
     useEffect(() => {
         const init = async () => {
-            console.log('LineageTree: Starting initial fetch')
             setLoading(true)
             try {
                 const { data } = await getLineageNodes({ all: true })
-                console.log(`LineageTree: Fetched ${data.length} nodes`)
 
                 const initialNodes: Node[] = data.map((node: LineageNode) => ({
                     id: node.id,
@@ -182,15 +180,12 @@ function LineageTreeInner() {
                 allEdgesRef.current = initialEdges
                 collapsedRef.current = new Set()
 
-                console.log('LineageTree: Applying initial layout')
                 const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(initialNodes, initialEdges)
                 setNodes(layoutedNodes)
                 setEdges(layoutedEdges)
-                console.log('LineageTree: Initial layout complete')
 
                 // Fit view after a brief delay to allow rendering
                 setTimeout(() => {
-                    console.log('LineageTree: Fitting view')
                     fitView()
                 }, 100)
             } catch (error) {
