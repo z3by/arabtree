@@ -66,3 +66,9 @@ export async function rateLimit(identifier: string, config: RateLimitConfig) {
     reset: Math.floor(record.resetTime / 1000), // Standard Unix seconds
   };
 }
+
+/**
+ * Reset the storage Map.
+ * ONLY for testing purposes.
+ */
+export const _resetStorage = () => storage.clear();
